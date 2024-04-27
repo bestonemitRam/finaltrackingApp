@@ -10,9 +10,6 @@ class ReportListView extends StatelessWidget {
   Widget build(BuildContext context) {
     final attendanceList =
         Provider.of<AttendanceReportProvider>(context).attendanceReport;
-
-    print("check length ${attendanceList}");
-
     if (attendanceList.isNotEmpty) {
       return SingleChildScrollView(
         child: Container(
@@ -25,7 +22,6 @@ class ReportListView extends StatelessWidget {
                     primary: false,
                     itemCount: attendanceList.length,
                     itemBuilder: (ctx, i) {
-                    
                       return AttendanceCardView(
                         i,
                         attendanceList[i].attendance_date!,
@@ -79,7 +75,7 @@ class ReportListView extends StatelessWidget {
             ),
             Expanded(
               child: Container(
-                child: Text('Day',
+                child: Text('Working',
                     style: TextStyle(fontSize: 15, color: Colors.white),
                     textAlign: TextAlign.start),
               ),
@@ -104,4 +100,6 @@ class ReportListView extends StatelessWidget {
       ),
     );
   }
+
+
 }

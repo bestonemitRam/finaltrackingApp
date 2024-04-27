@@ -1,15 +1,8 @@
-import 'package:bmitserp/provider/taskprovider.dart';
 import 'package:bmitserp/screen/dashboard/attendancescreen.dart';
 import 'package:bmitserp/screen/dashboard/leavescreen.dart';
 import 'package:bmitserp/widget/headerprofile.dart';
 import 'package:bmitserp/widget/radialDecoration.dart';
-import 'package:bmitserp/widget/task_status/completed_task_screen.dart';
-import 'package:bmitserp/widget/task_status/pending_task_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:get/get.dart';
-import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class AttendanceScreenHistory extends StatefulWidget {
@@ -22,9 +15,7 @@ class AttendanceScreenHistory extends StatefulWidget {
 class _TaskStatusScreenState extends State<AttendanceScreenHistory> {
   @override
   Widget build(BuildContext context) {
-    return 
-    
-    DefaultTabController(
+    return DefaultTabController(
       length: 2,
       child: Container(
         decoration: RadialDecoration(),
@@ -43,7 +34,6 @@ class _TaskStatusScreenState extends State<AttendanceScreenHistory> {
                   height: 2.h,
                 ),
                 SingleChildScrollView(
-                
                   child: Padding(
                     padding: EdgeInsets.only(right: 2.w),
                     child: Container(
@@ -61,7 +51,6 @@ class _TaskStatusScreenState extends State<AttendanceScreenHistory> {
                                   colors: [Colors.white10, Colors.white38]),
                               borderRadius: BorderRadius.circular(50),
                               color: Colors.redAccent),
-                       
                           tabs: [
                             Tab(
                               child: Align(
@@ -97,6 +86,5 @@ class _TaskStatusScreenState extends State<AttendanceScreenHistory> {
         ),
       ),
     );
- 
   }
 }

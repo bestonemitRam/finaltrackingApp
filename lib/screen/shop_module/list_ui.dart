@@ -59,10 +59,7 @@ class ListUi extends StatelessWidget {
                   child: Container(
                     width: 50,
                     height: 60,
-                    // decoration: BoxDecoration(
-                    //   border: Border.all(color: Colors.black),
-                    //   borderRadius: BorderRadius.circular(10),
-                    // ),
+                   
                     child: ClipRRect(
                         borderRadius: BorderRadius.circular(10),
                         child: CachedNetworkImage(
@@ -73,16 +70,7 @@ class ListUi extends StatelessWidget {
                           errorWidget: (context, url, error) =>
                               Icon(Icons.error),
                         )
-                        //  Image.network(
-                        //   APIURL.imageURL + retailerShopImage,
-                        //   fit: BoxFit.cover,
-                        //   errorBuilder: (context, error, stackTrace) {
-                        //     return Image.asset(
-                        //       'assets/images/dummy_avatar.png',
-                        //       fit: BoxFit.cover,
-                        //     );
-                        //   },
-                        // ),
+                     
                         ),
                   ),
                 ),
@@ -234,7 +222,8 @@ class ListUi extends StatelessWidget {
                   width: 1.w,
                 ),
                 GestureDetector(
-                  onTap: () {
+                  onTap: () 
+                  {
                     Get.to(OrderListingScreen(id: id!));
                   },
                   child: ClipRRect(

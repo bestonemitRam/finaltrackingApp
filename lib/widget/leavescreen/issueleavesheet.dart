@@ -24,6 +24,8 @@ class IssueLeaveSheetState extends State<IssueLeaveSheet> {
   TextEditingController endDate = TextEditingController();
   TextEditingController reason = TextEditingController();
   TextEditingController startDate = TextEditingController();
+  String startDates = '';
+  String endDateTime = '';
 
   void issueLeave() async {
     if (endDate.text.isNotEmpty &&
@@ -35,7 +37,7 @@ class IssueLeaveSheetState extends State<IssueLeaveSheet> {
         isLoading = true;
         final response =
             await Provider.of<LeaveProvider>(context, listen: false).issueLeave(
-                startDate.text, endDate.text, reason.text, selectedValue!.id);
+                startDates, endDateTime, reason.text, selectedValue!.id);
 
         if (!mounted) {
           return;
@@ -52,7 +54,8 @@ class IssueLeaveSheetState extends State<IssueLeaveSheet> {
             );
           },
         );
-      } catch (e) {
+      } catch (e) 
+      {
         dismissLoader();
         isLoading = false;
         showDialog(
@@ -81,6 +84,16 @@ class IssueLeaveSheetState extends State<IssueLeaveSheet> {
       EasyLoading.show(
           status: "Requesting...", maskType: EasyLoadingMaskType.black);
     });
+  }
+
+  static String dateTime(String time) {
+    DateTime dt = DateTime.parse(time);
+
+    final localTime = dt.toLocal();
+    var inputDate = DateTime.parse(localTime.toString());
+    var outputFormat = DateFormat('dd-MM-yyyy ').format(inputDate);
+
+    return outputFormat;
   }
 
   @override
@@ -153,8 +166,7 @@ class IssueLeaveSheetState extends State<IssueLeaveSheet> {
                       value: selectedValue,
                       onChanged: (value) {
                         selectedValue = value as Leave?;
-                        if (selectedValue != null) 
-                        {
+                        if (selectedValue != null) {
                           setState(() {});
                         }
                       },
@@ -244,15 +256,15 @@ class IssueLeaveSheetState extends State<IssueLeaveSheet> {
                       lastDate: DateTime(2100));
 
                   if (pickedDate != null) {
-                    print(
-                        pickedDate); //pickedDate output format => 2021-03-10 00:00:00.000
                     String formattedDate =
                         DateFormat('yyyy-MM-dd hh:mm:ss').format(pickedDate);
-                    print(
-                        formattedDate); //formatted date output using intl package =>  2021-03-16
+                    print("djkhfghg  $formattedDate");
+                    // dateTime()
+
                     setState(() {
-                      startDate.text =
-                          formattedDate; //set output date to TextField value.
+                      startDates = formattedDate;
+                      startDate.text = dateTime(formattedDate);
+                      ; //set output date to TextField value.
                     });
                   } else {}
                 },
@@ -306,15 +318,12 @@ class IssueLeaveSheetState extends State<IssueLeaveSheet> {
                       lastDate: DateTime(2100));
 
                   if (pickedDate != null) {
-                    print(
-                        pickedDate); //pickedDate output format => 2021-03-10 00:00:00.000
                     String formattedDate =
                         DateFormat('yyyy-MM-dd hh:mm:ss').format(pickedDate);
-                    print(
-                        formattedDate); //formatted date output using intl package =>  2021-03-16
+
                     setState(() {
-                      endDate.text =
-                          formattedDate; //set output date to TextField value.
+                      endDateTime = formattedDate;
+                      endDate.text = dateTime(formattedDate);
                     });
                   } else {}
                 },

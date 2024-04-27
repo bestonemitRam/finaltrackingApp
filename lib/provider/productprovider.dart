@@ -218,7 +218,7 @@ class ProductProvider with ChangeNotifier {
 
         final responseJson = AdvanceOrder.fromJson(responseData);
 
-        print("fjkdhgkjfdgfgkj ${responseJson}");
+      
 
         if (response.statusCode == 200) {
           debugPrint(responseData.toString());

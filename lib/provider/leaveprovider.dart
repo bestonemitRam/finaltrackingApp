@@ -342,12 +342,15 @@ class LeaveProvider with ChangeNotifier {
 
     
       final responseJson = RetailerModel.fromJson(responseData);
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200)
+       {
         makeShopList(responseJson.result!);
         EasyLoading.dismiss(animation: true);
 
         return responseJson;
-      } else {
+      } 
+      else
+       {
         EasyLoading.dismiss(animation: true);
         var errorMessage = responseData['message'];
         return responseJson;

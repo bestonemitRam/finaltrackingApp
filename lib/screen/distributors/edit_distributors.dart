@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-
 import 'package:bmitserp/api/apiConstant.dart';
 import 'package:bmitserp/data/source/network/controller/retailer_controller.dart';
 import 'package:bmitserp/model/distributor_model.dart';
@@ -963,10 +962,7 @@ class CreateShopScreenState extends State<EditDistributor> {
                                     bool status =
                                         await controller.editDistributor(widget
                                             .distributorList.id
-                                            .toString());
-
-                                    if (status) {
-                                      print("check data ${status}");
+                                            .toString());  if (status) {
                                       Provider.of<LeaveProvider>(context,
                                               listen: false)
                                           .getDistributorList();

@@ -1,9 +1,14 @@
+import 'dart:io';
+
 import 'package:bmitserp/api/apiConstant.dart';
 
 import 'package:bmitserp/screen/dashboard/homescreen.dart';
 import 'package:bmitserp/screen/dashboard/leaveandattendance_dash.dart';
 import 'package:bmitserp/screen/dashboard/morescreen.dart';
 import 'package:bmitserp/screen/dashboard/projectscreen.dart';
+import 'package:bmitserp/service/push_notifications.dart';
+import 'package:bmitserp/utils/showExitPopup.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -14,6 +19,7 @@ import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 import 'package:flutter/cupertino.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -25,22 +31,24 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class DashboardScreenState extends State<DashboardScreen> {
+  NotificationServices notificationServices = NotificationServices();
   Position? _currentPosition;
   List<Widget> _buildScreens() {
     return [
       HomeScreen(),
       ProjectScreen(),
-      // LeaveScreen(),
       AttendanceScreenHistory(),
-      // AttendanceScreen(),
       MoreScreen(),
     ];
   }
 
   @override
   void initState() {
-    // checklocation();
     super.initState();
+   
+    notificationServices.requestNotificationPermission();
+    notificationServices.firebaseInit(context);
+    notificationServices.setupInteractMessage(context);
 
     _handleLocationPermission();
     setupRemoteConfig();
@@ -149,8 +157,10 @@ class DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: PersistentTabView(context,
+    // ignore: deprecated_member_use
+    return WillPopScope(
+      onWillPop: () => showExitPopup(context),
+      child: PersistentTabView(context,
           controller: _controller,
           screens: _buildScreens(),
           items: _navBarsItems(),
@@ -203,10 +213,9 @@ class DashboardScreenState extends State<DashboardScreen> {
     String version = packageInfo.version;
     String buildNumber = packageInfo.buildNumber;
 
-    final remoteConfig = FirebaseRemoteConfig.instance;
 
-    print(
-        "gfjdhjkkjfgjdf  ${remoteConfig.getValue(APIURL.appUpdate).asBool()}   ${version}  ${remoteConfig.getValue(APIURL.Version).asString()}");
+
+    final remoteConfig = FirebaseRemoteConfig.instance;
 
     remoteConfig.setConfigSettings(RemoteConfigSettings(
         fetchTimeout: Duration(seconds: 10),
@@ -304,4 +313,77 @@ class DashboardScreenState extends State<DashboardScreen> {
       throw "url not lunched $url";
     }
   }
+
+  Future<bool> showExitPopup(context) async {
+    print("kfdjgkgjh");
+    return await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: SizedBox(
+              height: 90,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "If you closed app then you check out form the device",
+                    style: TextStyle(fontSize: 16.sp),
+                  ),
+                  SizedBox(height: 2.h),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            exit(0);
+                          },
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.tealAccent),
+                          child: Text(
+                            "Yes",
+                            style: TextStyle(fontSize: 16.sp),
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 4.w),
+                      Expanded(
+                          child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                        ),
+                        child: Text("No", style: TextStyle(fontSize: 16.sp)),
+                      ))
+                    ],
+                  )
+                ],
+              ),
+            ),
+          );
+        });
+  }
 }
+
+// Future<bool>  showExitPopup(BuildContext context) async {
+//   return showDialog(
+//     context: context,
+//     builder: (context) => AlertDialog(
+//       title: Text('Exit app?'),
+//       content: Text('Do you want to exit the app?'),
+//       actions: <Widget>[
+//         ElevatedButton(
+//           onPressed: () => Navigator.of(context).pop(false),
+//           child: Text('No'),
+//         ),
+//         ElevatedButton(
+//           onPressed: () => Navigator.of(context).pop(true),
+//           child: Text('Yes'),
+//         ),
+//       ],
+//     ),
+//   );
+// }
+
+

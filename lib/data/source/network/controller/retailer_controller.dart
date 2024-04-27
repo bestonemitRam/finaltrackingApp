@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:ffi';
+
 import 'dart:io';
 
 import 'package:bmitserp/api/apiConstant.dart';
@@ -364,6 +364,7 @@ class RetailerController extends GetxController {
           'user_id': '$getUserID',
         };
 
+        print("jfgjhkjfghhg ${cancelCheque.value}");
         if (distributorProfile.value != null) {
           request.headers.addAll(headers);
           final file = await http.MultipartFile.fromPath(
@@ -423,8 +424,9 @@ class RetailerController extends GetxController {
 
         try {
           final streamedResponse = await request.send();
-          final response = await http.Response.fromStream(streamedResponse);
-          print("kdjfhggf  ${response.statusCode}");
+          final response = await http.Response.fromStream(streamedResponse)
+              .timeout(Duration(seconds: 60));
+         
 
           var out = jsonDecode(response.body);
 
@@ -507,7 +509,6 @@ class RetailerController extends GetxController {
             'user_id': '$getUserID',
           };
           request.headers.addAll(headers);
-
           if (distributorProfile.value != null) {
             final file = await http.MultipartFile.fromPath(
                 'distributor_avatar', distributorProfile.value!.path);
@@ -563,19 +564,17 @@ class RetailerController extends GetxController {
 
           try {
             final streamedResponse = await request.send();
-            final response = await http.Response.fromStream(streamedResponse);
+            final response = await http.Response.fromStream(streamedResponse)
+                .timeout(Duration(seconds: 50));
             var out = jsonDecode(response.body);
-
-            print("djghjgh  ${response.statusCode}");
 
             if (response.statusCode == 201) {
               Fluttertoast.showToast(
-                  msg: "Distributor Updated successfully !",
+                  msg: "Distributor  Updated successfully!",
                   toastLength: Toast.LENGTH_SHORT,
                   gravity: ToastGravity.CENTER,
                   timeInSecForIosWeb: 1,
                   fontSize: 16.0);
-
               nameController.clear();
               contactController.clear();
               addressController.clear();
@@ -592,7 +591,6 @@ class RetailerController extends GetxController {
                   gravity: ToastGravity.CENTER,
                   timeInSecForIosWeb: 1,
                   fontSize: 16.0);
-
               return false;
             }
           } catch (e) {
@@ -645,9 +643,7 @@ class RetailerController extends GetxController {
       try {
         shopItems.clear();
         for (var data in shops) {
-          print("dfgj  ${data.quantity}");
           if (data.quantity != 0 && data.quantity != null) {
-            print("dsddfgfgj");
             shopItems.add(DataModel(
                 inventory_id: data.inventoryId.toString(),
                 total_orders: data.quantity.toString()));

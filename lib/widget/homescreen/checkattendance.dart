@@ -107,11 +107,10 @@ class CheckAttendanceState extends State<CheckAttendance> {
                       : HexColor("#3b98cc").withOpacity(.5),
                   child: IconButton(
                       iconSize: 70,
-                      onPressed: () async {
+                      onPressed: () async 
+                      {
                         LocationPermission permission =
-                            await Geolocator.checkPermission();
-
-                        print("lkfjgklfjhg  ${permission}");
+                        await Geolocator.checkPermission();
 
                         if (permission == LocationPermission.denied) {
                           showDialog(
@@ -173,7 +172,8 @@ class CheckAttendanceState extends State<CheckAttendance> {
                                         onPressed: () async {
                                           Navigator.of(context).pop(false);
 
-                                          final data = await dbHelper.fetchLocationData();
+                                          final data = await dbHelper
+                                              .fetchLocationData();
                                           print('Location Data: $data');
 
                                           if (await pref.getUserAuth()) {
@@ -254,9 +254,9 @@ class CheckAttendanceState extends State<CheckAttendance> {
                                       )
                                     ],
                                   ));
-                        } else {
-                          final data = await dbHelper.fetchLocationData();
-                          print('Location Data: $data');
+                        }
+                         else {
+                       
 
                           if (await pref.getUserAuth()) {
                             bool isAuthenticated =

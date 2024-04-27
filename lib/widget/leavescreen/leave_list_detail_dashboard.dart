@@ -8,7 +8,7 @@ class LeaveListdetailDashboard extends StatelessWidget {
   Widget build(BuildContext context) {
     final leaveData = Provider.of<LeaveProvider>(context);
     final leaves = leaveData.leaveDetailList;
-    print("fjkghjk  ${leaves}");
+ 
     if (leaves.length > 0) {
       return ListView.builder(
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),

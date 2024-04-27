@@ -4,8 +4,9 @@ import 'dart:core';
 import 'dart:math';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:background_location/background_location.dart';
+
 import 'package:bmitserp/api/apiConstant.dart';
+import 'package:bmitserp/api/app_strings.dart';
 import 'package:bmitserp/data/source/datastore/preferences.dart';
 import 'package:bmitserp/data/source/network/model/attendancestatus/AttendanceStatusResponse.dart';
 import 'package:bmitserp/data/source/network/model/attendancestatus/checkoutmodel.dart';
@@ -260,11 +261,7 @@ class DashboardProvider with ChangeNotifier {
     }
   }
 
-  ///MARK: - CHECK-IN API IMPLEMENTATION
   Future<AttendanceStatusResponse> checkInAttendance() async {
-    bgLocationTask();
-
-    print("Inside the Check In Api Statements");
     var uri = Uri.parse(APIURL.CHECK_IN_URL);
     Preferences preferences = Preferences();
     String token = await preferences.getToken();
@@ -284,18 +281,17 @@ class DashboardProvider with ChangeNotifier {
       'punch_in_longitude': locationStatus['longitude'].toString(),
     };
 
-    print("fkjdhgkdfkjg ${body} ${headers}");
-
     try {
       final response = await http.post(uri, headers: headers, body: body);
       final responseData = json.decode(response.body);
 
-      print("djhgfghjfgh  ${responseData['status']}  ${response.body}");
       final attendanceResponse =
           AttendanceStatusResponse.fromJson(responseData);
 
       if (responseData['status'] == true) {
-        bgLocationTask();
+        final service = FlutterBackgroundService();
+        service.startService();
+        Apphelper.CHECK_STATUS = '1';
 
         // updateAttendanceStatus(EmployeeAttendanceData(
         //     punchInTime: attendanceResponse.data!.attendanceData!.punchInTime!,
@@ -317,160 +313,16 @@ class DashboardProvider with ChangeNotifier {
         //     checkOutAttendance();
         //    });
 
-        print("lkfhjdgkfgk  ${responseData['message']}");
         var errorMessage = responseData['message'];
         return attendanceResponse;
       }
     } catch (e) {
-      debugPrint(locationStatus['latitude'].toString());
-      debugPrint(locationStatus['longitude'].toString());
-      debugPrint(await WifiInfo().wifiBSSID() ?? "");
       rethrow;
     }
   }
 
-  Future<void> bgLocationTask() async {
-    // BackgroundLocation.startLocationService();
-    //initBackgroundLocation();
-
-    final service = FlutterBackgroundService();
-
-    var isRunning = await service.isRunning();
-    service.startService();
-    FlutterBackgroundService().invoke("setAsBackground");
-    // FlutterBackgroundService().invoke("setAsForeground");
-
-    // // print("kfjglkfghlkfghj  ${isRunning}");
-    // if (isRunning)
-    // {
-    //   service.invoke("stopService");
-    // } else {
-
-    // }
-
-    // try {
-    //   final backgroundApiViewModel = DashboardProvider();
-
-    //   Timer.periodic(Duration(minutes: 1), (Timer t) async {
-    //     print("Calling getCurrentPosition within Timer  ${DateTime.now()}");
-
-    //     backgroundApiViewModel.getCurrentPosition();
-    //   });
-    // } catch (err, stackTrace) {
-    //   print("This is the error: $err");
-    //   print("Stacktrace : ${stackTrace}");
-    //   throw Exception(err.toString());
-    // }
-  }
-
-  void stopLocationService() {
-    print("stop service");
-    BackgroundLocation.stopLocationService();
-    BackgroundLocation.stopLocationService();
-  }
-
-  void initBackgroundLocation() {
-    print("djfgjghkj");
-    BackgroundLocation.startLocationService(distanceFilter: 1);
-    BackgroundLocation.isServiceRunning();
-    BackgroundLocation.getLocationUpdates((location) async {
-      getCurrentPosition();
-      await dbHelper.insertLocationData(location.latitude!, location.longitude!,
-          DateTime.now().millisecondsSinceEpoch);
-    });
-    BackgroundLocation().getCurrentLocation().then((location) async {
-      print('This is current Location ' + location.toMap().toString());
-      await dbHelper.insertLocationData(location.latitude!, location.longitude!,
-          DateTime.now().millisecondsSinceEpoch);
-    });
-  }
-
-  Future<void> scheduleNewNotification(
-      String date, String message, int hour, int minute) async {
-    final convertedDate = new DateFormat('yyyy-MM-dd').parse(date);
-
-    await AwesomeNotifications().createNotification(
-        content: NotificationContent(
-            id: Random().nextInt(1000000),
-            // -1 is replaced by a random number
-            channelKey: 'digital_hr_channel',
-            title: "Hello There",
-            body: message,
-            //'asset://assets/images/balloons-in-sky.jpg',
-            notificationLayout: NotificationLayout.Default,
-            payload: {'notificationId': '1234567890'}),
-        actionButtons: [
-          NotificationActionButton(
-              key: 'REDIRECT', label: 'Open', actionType: ActionType.Default),
-          NotificationActionButton(
-              key: 'DISMISS',
-              label: 'Dismiss',
-              actionType: ActionType.DismissAction,
-              isDangerousOption: true)
-        ],
-        schedule: NotificationCalendar.fromDate(
-            date: DateTime(convertedDate.year, convertedDate.month,
-                convertedDate.day, hour, minute - 15)));
-  }
-
-  checklocation(double long, double lat) async {
-    Preferences preferences = Preferences();
-    String token = await preferences.getToken();
-    int getUserID = await preferences.getUserId();
-    print('response');
-    Map<String, String> headers = {
-      'Accept': 'application/json; charset=UTF-8',
-      'user_token': '$token',
-      'user_id': '$getUserID',
-    };
-
-    var uri = await Uri.parse(APIURL.LOCATION_TRACKER);
-    try {
-      final response = await http.post(uri, headers: headers, body: {
-        "user_latitude": lat.toString(),
-        "user_longitude": long.toString()
-      });
-
-      print("fgkjh  ${headers} ${uri}");
-      debugPrint('resp   ${response.body.toString()}');
-      final responseData = json.encode(response.body);
-      print('response---->${responseData}');
-    } catch (e) {
-      print('exphfiuer$e');
-    }
-  }
-
-  Future<void> getCurrentPosition() async {
-    try {
-      bool result = await InternetConnectionChecker().hasConnection;
-
-      if (result == true) {
-        Position position = await Geolocator.getCurrentPosition(
-            desiredAccuracy: LocationAccuracy.high);
-        print("latLongsddd ${position.longitude} ${position.latitude}");
-        checklocation(position.longitude, position.latitude);
-      } else {
-        Position position = await Geolocator.getCurrentPosition(
-            desiredAccuracy: LocationAccuracy.high);
-        print("latLongsddd ${position.longitude} ${position.latitude}");
-        //rampr
-        // await dbHelper.insertLocationData(position.latitude!,
-        //     position.longitude!, DateTime.now().millisecondsSinceEpoch);
-
-        print(
-            "dsdsfdfgfhgfh ${InternetConnectionChecker().hasConnection}  ${position.longitude} ${position.latitude} 1");
-      }
-    } catch (e, stT) {
-      print("Error getting current position: $e");
-      print("StackTrace: $stT");
-      // Handle the error accordingly
-      checklocation(0.0, 0.0);
-    }
-  }
-
-  ///MARK: - CheckOut API Implementation
+  
   Future<CheckOutModel> checkOutAttendance() async {
-    print("dkfjhgkljfghkfgk   ");
     var uri = Uri.parse(APIURL.CHECK_Out_URL);
     Preferences preferences = Preferences();
     String token = await preferences.getToken();
@@ -502,7 +354,8 @@ class DashboardProvider with ChangeNotifier {
       print("klfgjhkjhfgkh  ${responseData}   ${attendanceResponse}");
 
       if (response.statusCode == 200) {
-        stopLocationService();
+        final service = FlutterBackgroundService();
+        service.invoke("stopService");
 
         if (responseData['status'] == true) {
           updateAttendanceStatus(EmployeeAttendanceData(
@@ -528,7 +381,7 @@ class DashboardProvider with ChangeNotifier {
   final Color leftBarColor = HexColor("#FFFFFF");
   final double width = 15;
 
-  ///MARK: -BarChart Data
+  
   BarChartGroupData makeGroupData(int x, double y1) {
     return BarChartGroupData(barsSpace: 4, x: x, barRods: [
       BarChartRodData(

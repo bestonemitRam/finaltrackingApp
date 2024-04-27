@@ -79,11 +79,12 @@ class AttendanceBottomSheetState extends State<AttedanceBottomSheet> {
       if (status) {
         bool result = await InternetConnectionChecker().hasConnection;
 
-        if (result) {
-          provider.initBackgroundLocation();
+        if (result) 
+        {
+       
 
           final response = await provider.checkInAttendance();
-          print("hgghhghghgh  ${response}");
+       
           isEnabled = true;
           if (!mounted) {
             return;

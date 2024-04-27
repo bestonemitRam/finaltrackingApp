@@ -132,7 +132,7 @@ class Preferences with ChangeNotifier {
   Future<String> getToken() async {
     final prefs = await SharedPreferences.getInstance();
 
-    print("kfjgkjfgkh  ${prefs.getString(Apphelper.USER_TOKEN)}");
+   
     return prefs.getString(Apphelper.USER_TOKEN) ?? '';
   }
 

@@ -59,6 +59,7 @@ android {
         targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        multiDexEnabled true
     }
 
     // signingConfigs {
@@ -87,5 +88,17 @@ dependencies
 {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.0'
-    
+    implementation 'com.google.android.gms:play-services-location:16.0.0'
+    implementation(platform("com.google.firebase:firebase-bom:32.8.1"))
+    implementation 'com.google.firebase:firebase-analytics'
+     implementation 'com.google.firebase:firebase-core:21.1.1'
+     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.2.2'
+       implementation("com.google.firebase:firebase-analytics")
 }
+
+  // When using the BoM, you don't specify versions in Firebase library dependencies
+
+  // Add the dependency for the Firebase SDK for Google Analytics
+
+    
+

@@ -1,5 +1,7 @@
 class APIURL {
-  static const production = "https://bsoe.meestdrive.in/";
+  //static const production = "https://bsoe.meestdrive.in/";
+  static const production = "http://sales.meestdrive.in/";
+
   static const imageURL = "https://s3.ap-south-1.amazonaws.com/erpbestone/";
   static const MAIN_URL = production;
   static const API_URL = MAIN_URL + "api";
@@ -54,11 +56,11 @@ class APIURL {
       "https://graph.facebook.com/v18.0/249858914881854/messages";
   static const String WHATSAPP_BEARER =
       "Bearer EAAGESnPemBYBO1Sozg1i9bTZBx1s6vftHuSNw41wAAQ5ZB7WxXvrxLi24GQISTR7fqg0TlFv5R9MO7BIYqrjbpdT5M1ixPYs21ulI4sq0yO3KCyyGxfoZBb5VhXGet7O87Amk1OKI0DND3LyWFnehYbCjr9pYdP8risOtZCxMgrQAi7U2ggslT0JBPEvqZC77gromRO81lKWVZBP9YzESoeBKJ4LEZD";
-  static const String ADVANCE_ORDER = "$API_URL/sales/advanceOrderProcessingList";
+  static const String ADVANCE_ORDER =
+      "$API_URL/sales/advanceOrderProcessingList";
   static const String CREATE_INVENTORY = "$API_URL/sales/salesInventory/create";
-  static const String GET_INVENTORY_LIST = "$API_URL/sales/getInventoryDataSales";
-
-
+  static const String GET_INVENTORY_LIST =
+      "$API_URL/sales/getInventoryDataSales";
 
   static final String forceFully = "forceFully";
   static final String Version = "Version";
@@ -66,8 +68,9 @@ class APIURL {
   static final String updateUrl = "updateUrl";
   static final String updateMessage = "updateMessage";
 
+  static const String UPLOAD_OFFINTERNET_LOCATION =
+      "$API_URL/sales/locationSaverOffData";
 
-    
-
-
+  static const String DAILY_TASK = "$API_URL/task/taskList";
+  static const String DAILY_TASK_DETAILS = "$API_URL/task/taskDetails";
 }

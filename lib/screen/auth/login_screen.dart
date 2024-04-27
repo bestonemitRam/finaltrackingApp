@@ -222,17 +222,17 @@ class loginScreenState extends State<LoginScreen> {
                       gaps(20),
 
                       /// create Forget password option
-                      Center(
-                        child: GestureDetector(
-                          onTap: () {
-                            openBrowserTab();
-                          },
-                          child: Text(
-                              textAlign: TextAlign.left,
-                              style: TextStyle(color: Colors.white),
-                              'Forget Password'),
-                        ),
-                      ),
+                      // Center(
+                      //   child: GestureDetector(
+                      //     onTap: () {
+                      //       openBrowserTab();
+                      //     },
+                      //     child: Text(
+                      //         textAlign: TextAlign.left,
+                      //         style: TextStyle(color: Colors.white),
+                      //         'Forget Password'),
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),

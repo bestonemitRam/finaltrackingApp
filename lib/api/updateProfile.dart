@@ -3,8 +3,7 @@ import 'dart:io';
 
 import 'package:bmitserp/api/apiConstant.dart';
 import 'package:bmitserp/data/source/datastore/preferences.dart';
-import 'package:bmitserp/data/source/network/model/profile/Profileresponse.dart';
-import 'package:bmitserp/utils/constant.dart';
+
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';

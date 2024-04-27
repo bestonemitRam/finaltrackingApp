@@ -17,7 +17,8 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-class CreateDistributor extends StatefulWidget {
+class CreateDistributor extends StatefulWidget 
+{
   @override
   State<StatefulWidget> createState() => CreateShopScreenState();
 }
@@ -50,8 +51,7 @@ class CreateShopScreenState extends State<CreateDistributor> {
     controller.aadhImagefront.value = null;
     controller.fileList.clear();
     controller.fileList.value = [];
-
-    super.initState();
+  super.initState();
   }
 
   @override

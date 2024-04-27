@@ -55,35 +55,14 @@ class MoreScreen extends StatelessWidget {
 
                 Services('Retailers', Icons.shop, ShopListingScreen()),
 
-                Services('My Inventory', Icons.inventory, InventoryReport()),
-
-                // Services(
-                //     'Extra Order',
-                //     Icons.shop,
-                //     ChangeNotifierProvider<LeaveProvider>(
-                //         create: (BuildContext context) => LeaveProvider(),
-                //         child: ShopListingScreen())),
-
-                // Services(
-                //     'Map Area',
-                //     Icons.shop,
-                //     ChangeNotifierProvider<LeaveProvider>(
-                //         create: (BuildContext context) => LeaveProvider(),
-                //         child: GoogleMapScreen())),
+                 Services('My Inventory', Icons.inventory, InventoryReport()),
 
                 Services('Distributors', Icons.directions_boat_filled_rounded,
                     DistributorScreen()),
 
-                // Services(
-                //     'Create Order',
-                //     Icons.shop,
-                //     ChangeNotifierProvider<LeaveProvider>(
-                //         create: (BuildContext context) => LeaveProvider(),
-                //         child: OrderGenerate())),
-
-                Services('My Task', Icons.group_work_sharp, TaskStatusScreen()),
-                Services('TA / DA', Icons.money, TadaScreen()),
-                Services('Holiday', Icons.calendar_month, HolidayScreen()),
+                // Services('My Task', Icons.group_work_sharp, TaskStatusScreen()),
+                // Services('TA / DA', Icons.money, TadaScreen()),
+                // Services('Holiday', Icons.calendar_month, HolidayScreen()),
 
                 //Services('Leave Calendar', Icons.calendar_month_outlined,LeaveCalendarScreen()),
 
@@ -98,8 +77,7 @@ class MoreScreen extends StatelessWidget {
                   ),
                 ),
 
-                Services(
-                    'Change Password', Icons.password, ChangePasswordScreen()),
+                // Services('Change Password', Icons.password, ChangePasswordScreen()),
                 // Services('Terms and Conditions', Icons.rule,
                 // AboutScreen('terms-and-conditions')),
 

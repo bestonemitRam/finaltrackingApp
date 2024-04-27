@@ -29,7 +29,8 @@ class _OrderListingScreenState extends State<OrderListingScreen> {
 
   @override
   void didChangeDependencies() {
-    if (init) {
+    if (init) 
+    {
       initialState();
       init = false;
     }
@@ -41,8 +42,7 @@ class _OrderListingScreenState extends State<OrderListingScreen> {
     super.didChangeDependencies();
   }
 
-  Future<String> initialState() async 
-  {
+  Future<String> initialState() async {
     EasyLoading.show(status: "Loading", maskType: EasyLoadingMaskType.black);
     final leaveProvider = Provider.of<ProductProvider>(context, listen: false);
     final leaveData = await leaveProvider.getOrderList(widget.id);
@@ -51,6 +51,8 @@ class _OrderListingScreenState extends State<OrderListingScreen> {
     if (!mounted) {
       return "Loaded";
     }
+
+    print("ldkgj  ${leaveData.result}");
 
     if (leaveData == 200) {}
 
@@ -61,8 +63,7 @@ class _OrderListingScreenState extends State<OrderListingScreen> {
   Widget build(BuildContext context) {
     final leaveData = Provider.of<ProductProvider>(context, listen: true);
     final order = leaveData.orderlist;
-    return 
-    Container(
+    return Container(
       decoration: RadialDecoration(),
       child: Scaffold(
         appBar: AppBar(
@@ -89,8 +90,7 @@ class _OrderListingScreenState extends State<OrderListingScreen> {
           color: Colors.white,
           backgroundColor: Colors.blueGrey,
           edgeOffset: 50,
-          onRefresh: () async 
-          {
+          onRefresh: () async {
             await initialState();
           },
           child: order.isNotEmpty
@@ -101,15 +101,21 @@ class _OrderListingScreenState extends State<OrderListingScreen> {
                   //physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   itemCount: order.length,
-                  itemBuilder: (ctx, i) 
-                  {
+                  itemBuilder: (ctx, i) {
                     final item = order[i];
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: OrderList(item: item, retailer_id: widget.id),
                     );
                   })
-              : Center(),
+              : Center(
+                  child: Container(
+                    child: Text(
+                      "Sorry ! Don't have a order ",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
         ),
       ),
     );

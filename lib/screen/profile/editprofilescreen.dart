@@ -81,16 +81,6 @@ class EditProfileScreenState extends State<EditProfileScreen> {
         EasyLoading.show(
             status: "Changing", maskType: EasyLoadingMaskType.black);
       });
-      // final response =
-      //     await Provider.of<ProfileProvider>(context, listen: false)
-      //         .updateProfile(
-      //             _nameController.text,
-      //             _emailController.text,
-      //             _addressController.text,
-      //             _dobController.text,
-      //             getGender(),
-      //             _phoneController.text,
-      //             File(imagefiles!.path));
 
       UpdateProfiles updateProfiles = UpdateProfiles();
       updateProfiles.updateProfile(
@@ -101,17 +91,6 @@ class EditProfileScreenState extends State<EditProfileScreen> {
           getGender(),
           _phoneController.text,
           File(imagefiles!.path));
-
-      // if (response.statusCode == 200)
-      //  {
-      //   ScaffoldMessenger.of(context)
-      //       .showSnackBar(SnackBar(content: Text(response.message)));
-      //   Navigator.pop(context);
-      // } else {
-      //   ScaffoldMessenger.of(context)
-      //       .showSnackBar(SnackBar(content: Text(response.message)));
-      // }
-  
     }
   }
 
@@ -122,7 +101,6 @@ class EditProfileScreenState extends State<EditProfileScreen> {
     if (initial) {
       _nameController.text = Apphelper.USER_NAME;
       _emailController.text = Apphelper.USER_EMAIL;
-      //  _addressController.text = profile.address;
       _phoneController.text = Apphelper.USER_CONTACT;
       _dobController.text = Apphelper.USER_DOB;
 
@@ -159,11 +137,8 @@ class EditProfileScreenState extends State<EditProfileScreen> {
         setState(() {});
       } else {
         print("Error");
-        // DialogHelper.showFlutterToast(strMsg: Languages.of(context)!.imageNotSelected);
       }
-    } catch (e) {
-      // DialogHelper.showFlutterToast(strMsg: 'Error while picking file');
-    }
+    } catch (e) {}
   }
 
   @override
@@ -212,8 +187,6 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                   style: TextStyle(color: Colors.white),
                 )),
           ),
-       
-       
           body: SingleChildScrollView(
             child: Column(
               children: [
@@ -225,7 +198,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                       radius: 5.5.h,
                       backgroundImage: imagefiles != null
                           ? FileImage(File(imagefiles!.path))
-                          : Apphelper.USER_AVATAR != null
+                          : Apphelper.USER_AVATAR != "USER_AVATAR"
                               ? NetworkImage(Apphelper.USER_AVATAR.toString())
                               : AssetImage('assets/images/dummy_avatar.png')
                                   as ImageProvider,
@@ -406,6 +379,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                           TextFormField(
                             controller: _phoneController,
                             keyboardType: TextInputType.phone,
+                            maxLength: 10,
                             style: TextStyle(color: Colors.white),
                             validator: (value) {
                               if (!validateField(value!)) {

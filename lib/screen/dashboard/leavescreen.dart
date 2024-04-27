@@ -76,25 +76,13 @@ class LeaveScreenState extends State<LeaveScreen> {
       child: Scaffold(
           backgroundColor: Colors.transparent,
           body: SafeArea(
-            //   child: RefreshIndicator(
-            // onRefresh: () {
-            //   return initialState();
-            // },
+           
             child: SingleChildScrollView(
               child: Container(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // HeaderProfile(),
-
-                    // Container(
-                    //     padding:
-                    //         EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                    //     width: double.infinity,
-                    //     child: const Text(
-                    //       'Leave',
-                    //       style: TextStyle(fontSize: 20, color: Colors.white),
-                    //     )),
+                   
                     LeaveListDashboard(),
                     Visibility(
                       visible: true,
@@ -103,18 +91,9 @@ class LeaveScreenState extends State<LeaveScreen> {
                           child: LeaveButton()),
                     ),
                     SizedBox(
-                      height: 20,
-                    ),
-                    Visibility(
-                      visible: isVisible,
-                      child: Text(
-                        "Recent Leave Activity",
-                        style: TextStyle(color: Colors.white, fontSize: 20),
-                      ),
-                    ),
-                    SizedBox(
                       height: 10,
                     ),
+
                     Stack(
                       children: [
                         Align(
@@ -127,7 +106,8 @@ class LeaveScreenState extends State<LeaveScreen> {
                               child: Padding(
                                 padding: const EdgeInsets.only(top: 50),
                                 child: Column(
-                                  children: [
+                                  children: 
+                                  [
                                     Visibility(
                                       visible: true,
                                       child: Padding(
@@ -137,7 +117,8 @@ class LeaveScreenState extends State<LeaveScreen> {
                                     ),
                                     Visibility(
                                         visible: true,
-                                        child: LeaveListdetailDashboard()),
+                                        child: LeaveListdetailDashboard()
+                                        ),
                                   ],
                                 ),
                               ),

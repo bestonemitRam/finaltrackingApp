@@ -3,6 +3,7 @@ import 'package:bmitserp/widget/cancel_leave_bottom_sheet.dart';
 import 'package:bmitserp/widget/log_out_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class LeaveDetailRow extends StatelessWidget {
@@ -24,14 +25,26 @@ class LeaveDetailRow extends StatelessWidget {
       required this.requestedAt});
 
   @override
-  Widget build(BuildContext context) {
-    void onLeaveCancelledClicked(int id) {
+  Widget build(BuildContext context) 
+  {
+    void onLeaveCancelledClicked(int id) 
+    {
       showModalBottomSheet(
           context: context,
           useRootNavigator: true,
           builder: (context) {
             return CancelLeaveBottomSheet(id);
           });
+    }
+
+    String dateTime(String time) {
+      DateTime dt = DateTime.parse(time);
+
+      final localTime = dt.toLocal();
+      var inputDate = DateTime.parse(localTime.toString());
+      var outputFormat = DateFormat('dd-MM-yyyy ').format(inputDate);
+
+      return outputFormat;
     }
 
     return ClipRRect(
@@ -55,7 +68,7 @@ class LeaveDetailRow extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 5),
                     child: Text(
-                      "$from - $to",
+                      "${dateTime(from)} - ${dateTime(to)}",
                       style: TextStyle(color: Colors.white, fontSize: 12),
                     ),
                   ),
@@ -80,9 +93,9 @@ class LeaveDetailRow extends StatelessWidget {
                   ),
                   GestureDetector(
                     onTap: () {
-                      if (status.toLowerCase() == "pending") {
-                        onLeaveCancelledClicked(id);
-                      }
+                      // if (status.toLowerCase() == "pending") {
+                      //   onLeaveCancelledClicked(id);
+                      // }
                     },
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(10),
@@ -120,6 +133,4 @@ class LeaveDetailRow extends StatelessWidget {
         return Colors.orange;
     }
   }
-
-
 }

@@ -64,11 +64,20 @@
             android:name="flutterEmbedding"
             android:value="2" />
 
+          <service
+            android:name="id.flutter.flutter_background_service.BackgroundService"
+            android:foregroundServiceType="location"
+        />
+
         <meta-data android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBvbt_XselhEKjHeAihYwcWz0cGW8eVokw"/>
                     <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/app_icon" />
+             <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="high_importance_channel" />
+           
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility?hl=en and

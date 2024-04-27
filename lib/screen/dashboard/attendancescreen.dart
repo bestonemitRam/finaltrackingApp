@@ -42,21 +42,12 @@ class AttendanceScreenState extends State<AttendanceScreen> {
       child: Scaffold(
           backgroundColor: Colors.transparent,
           body: SafeArea(
-            //   child: RefreshIndicator(
-            // onRefresh: () {
-            //   return loadAttendanceReport();
-            // },
             child: SingleChildScrollView(
               physics: AlwaysScrollableScrollPhysics(),
               child: Container(
                 width: double.infinity,
                 child: Column(
-                  children: [
-                    // HeaderProfile(),
-                    // AttendanceStatus(),
-                    AttendanceToggle(),
-                    ReportListView()
-                  ],
+                  children: [AttendanceToggle(), ReportListView()],
                 ),
               ),
             ),

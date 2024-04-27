@@ -97,11 +97,12 @@ class _ProfileScreenActivityState extends State<ProfileScreenActivity> {
                             child: CircleAvatar(
                               backgroundColor: Colors.grey,
                               radius: 5.5.h,
-                              backgroundImage: Apphelper.USER_NAME != null
-                                  ? NetworkImage(Apphelper.USER_NAME!)
-                                  : AssetImage(
-                                      'assets/images/dummy_avatar.png',
-                                    ) as ImageProvider,
+                              backgroundImage:
+                                  Apphelper.USER_AVATAR != 'USER_AVATAR'
+                                      ? NetworkImage(Apphelper.USER_AVATAR!)
+                                      : AssetImage(
+                                          'assets/images/dummy_avatar.png',
+                                        ) as ImageProvider,
                             ),
                           ),
                         ),

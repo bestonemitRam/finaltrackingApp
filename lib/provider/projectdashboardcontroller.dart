@@ -91,7 +91,7 @@ class ProjectDashboardController extends GetxController {
 
   @override
   void onInit() {
-    getProjectOverview();
+    // getProjectOverview();
     super.onInit();
   }
 }
