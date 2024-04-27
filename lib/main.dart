@@ -6,6 +6,7 @@ import 'package:bmitserp/provider/productprovider.dart';
 import 'package:bmitserp/provider/taskprovider.dart';
 import 'package:bmitserp/service/push_notifications.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 
 import 'dart:async';
@@ -137,9 +138,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await Firebase.initializeApp(
-  //   options: DefaultFirebaseOptions.currentPlatform,
-  // );
+  
 
   await Firebase.initializeApp(
     name: 'BMITS ERP',
@@ -237,6 +236,7 @@ void main() async {
   //     await PlatformAssetBundle().load('assets/ca/lets-encrypt-r3.pem');
   // SecurityContext.defaultContext
   //     .setTrustedCertificatesBytes(data.buffer.asUint8List());
+  
 
   runApp(MyApp());
   configLoading();

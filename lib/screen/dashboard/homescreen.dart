@@ -24,18 +24,17 @@ class HomeScreen extends StatefulWidget {
   State<StatefulWidget> createState() => HomeScreenState();
 }
 
-class HomeScreenState extends State<HomeScreen> 
-{
+class HomeScreenState extends State<HomeScreen> {
   @override
-  void initState() 
-  {
+  void initState() {
     super.initState();
     _startBackgroundLocationUpdates();
   }
 
-  Future<void> _startBackgroundLocationUpdates() async
-   {
+  Future<void> _startBackgroundLocationUpdates() async {
     final service = FlutterBackgroundService();
+
+    print("kdjfhgjkhg  ${Apphelper.CHECK_STATUS}");
 
     if (Apphelper.CHECK_STATUS == "0") {
       service.invoke("stopService");
@@ -112,12 +111,10 @@ class HomeScreenState extends State<HomeScreen>
         ));
   }
 
-  Future<bool> showExitPopup(context) async 
-  {
+  Future<bool> showExitPopup(context) async {
     return await showDialog(
         context: context,
-        builder: (BuildContext context)
-         {
+        builder: (BuildContext context) {
           return AlertDialog(
             content: SizedBox(
               height: 90,
