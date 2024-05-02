@@ -100,6 +100,12 @@ dependencies:
   flutter_background_service: ^5.0.5
   flutter_local_notifications:
   app_settings: ^4.2.0
+  wakelock: ^0.6.2
+  keep_screen_on: ^3.0.0
+  android_alarm_manager_plus: ^4.0.2
+  flutter_broadcasts: ^0.4.0
+  fbroadcast: ^2.0.0
+ 
  
  
   

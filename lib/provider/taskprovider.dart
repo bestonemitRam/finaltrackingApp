@@ -57,7 +57,7 @@ class MyTaskProvider with ChangeNotifier {
     return [..._taskModelData];
   }
 
-  Future getDailyTask() async {
+  Future getDailyTask(String date) async {
     var uri = Uri.parse(APIURL.DAILY_TASK);
 
     Preferences preferences = Preferences();
@@ -71,11 +71,9 @@ class MyTaskProvider with ChangeNotifier {
       'user_id': '$getUserID',
     };
 
-    String formattedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-
     try {
       final response = await http.post(uri, headers: headers, body: {
-        'filterDate': formattedDate,
+        'filterDate': date,
       });
 
       final responseData = json.decode(response.body);
@@ -100,12 +98,4 @@ class MyTaskProvider with ChangeNotifier {
 
     notifyListeners();
   }
-
-
-
-
-
-
-
-
 }

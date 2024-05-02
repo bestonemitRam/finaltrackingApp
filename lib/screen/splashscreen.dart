@@ -23,17 +23,18 @@ class SplashState extends State<SplashScreen> {
       () async {
         try {
           bool result = await InternetConnectionChecker().hasConnection;
-          if (result == true) {
+          if (result == true) 
+          {
             final response = await Provider.of<Auth>(context, listen: false).getMe();
             Preferences preferences = Preferences();
             String result = await preferences.getToken();
-            print('check token  ${result}');
+            print('check token${result}');
             if (result == '')
              {
               Navigator.pushReplacementNamed(context, LoginScreen.routeName);
-            } else {
-              Navigator.pushReplacementNamed(
-                  context, DashboardScreen.routeName);
+             } else 
+            {
+              Navigator.pushReplacementNamed( context, DashboardScreen.routeName);
             }
           } else {}
         } catch (e) {}
@@ -46,8 +47,7 @@ class SplashState extends State<SplashScreen> {
     try {
       bool result = await InternetConnectionChecker().hasConnection;
       if (result == true) {
-        final response =
-            await Provider.of<Auth>(context, listen: false).getMe();
+        final response =  await Provider.of<Auth>(context, listen: false).getMe();
       } else {}
 
       return 'loaded';

@@ -1,3 +1,4 @@
+import 'package:bmitserp/api/app_strings.dart';
 import 'package:bmitserp/provider/morescreenprovider.dart';
 import 'package:bmitserp/screen/auth/login_screen.dart';
 import 'package:bmitserp/utils/navigationservice.dart';
@@ -111,6 +112,7 @@ class LogOutBottomSheetState extends State<LogOutBottomSheet> {
                               shape: ButtonBorder()),
                           onPressed: () async {
                             logout();
+                            Apphelper.totalWorkingHours = "0 hr 0 min";
                           },
                           child: Container(
                             padding: const EdgeInsets.symmetric(vertical: 10),

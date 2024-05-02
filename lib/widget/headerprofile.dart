@@ -20,12 +20,9 @@ class HeaderState extends State<HeaderProfile> {
   Widget build(BuildContext context) {
     final provider = Provider.of<PrefProvider>(context);
 
-    print("kfjdkljhgf ${APIURL.imageURL + Apphelper.USER_AVATAR.toString()}");
 
-    //  final prefProvider = Provider.of<PrefProvider>(context);
-    //provider.getUser();
 
-    // print("lkfjghkljfgh  ${sharedPref.getString(Apphelper.USER_NAME) ?? ""}");
+  
 
     return GestureDetector(
       onTap: () {

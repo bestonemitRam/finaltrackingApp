@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:bmitserp/api/apiConstant.dart';
+import 'package:bmitserp/api/app_strings.dart';
 import 'package:bmitserp/data/source/datastore/preferences.dart';
 import 'package:bmitserp/data/source/network/model/login/Loginresponse.dart';
 import 'package:bmitserp/model/check_auth_model.dart';
@@ -72,14 +73,22 @@ class Auth with ChangeNotifier {
       final response = await http.get(uri, headers: headers);
       final responseData = json.decode(response.body);
       final responseJson = CheckAuthModel.fromJson(responseData);
+
+      print("kjdfbgj ${responseJson}  ${response.statusCode}  ");
       if (response.statusCode == 200) {
         Preferences preferences = Preferences();
-        await preferences.checkAuth(responseJson.result!.userData!,
-            responseJson.result!.active_status.toString());
+        await preferences.checkAuth(
+            responseJson.result!.userData!,
+            responseJson.result!.activeStatus.toString(),
+            responseJson.result!.punchData != null
+                ? responseJson.result!.punchData!.totalWorkingHours
+                : '0 hr 0 min');
         return responseJson;
-      } else {
+      } else 
+      {
         Preferences preferences = Preferences();
         preferences.clearPrefs();
+          Apphelper.totalWorkingHours = "0 hr 0 min";
         return responseJson;
       }
     } catch (error) {

@@ -45,8 +45,10 @@ class ProjectScreen extends StatelessWidget {
                   HeaderProfile(),
                   projectOverview(),
                   DailyTask(),
+              
                   // recentProject(),
                   // recentTasks()
+              
                 ],
               ),
             ),

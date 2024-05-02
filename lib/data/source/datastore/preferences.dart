@@ -34,12 +34,15 @@ class Preferences with ChangeNotifier {
     return true;
   }
 
-  Future<bool> checkAuth(UserDatas data, String active_status) async {
+  Future<bool> checkAuth(
+      UserDatas data, String active_status, totalWorkingHours) async {
     // Obtain shared preferences.
+    print("dfgkjhdg ${active_status}");
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(Apphelper.USER_TOKEN, data.userToken!);
     await prefs.setInt(Apphelper.USER_ID, data.id!);
-    //await prefs.setString(Apphelper.USER_AVATAR, data.avatar);
+    await prefs.setString(
+        Apphelper.USER_AVATAR, data.avatar != null ? data.avatar : '');
     await prefs.setString(Apphelper.USER_EMAIL, data.mail!);
     await prefs.setString(Apphelper.USER_NAME, data.fullName!);
     // await prefs.setString(Apphelper.USER_EMP_CODE, data.employeeCode);
@@ -51,12 +54,14 @@ class Preferences with ChangeNotifier {
     Apphelper.USER_DOB = data.dob!;
     Apphelper.USER_GENDAR = data.gender!;
     Apphelper.USER_CONTACT = data.contact!;
-    //Apphelper.USER_AVATAR = data.avatar;
+    Apphelper.USER_AVATAR = data.avatar != null ? data.avatar : '';
     Apphelper.USER_NAME = data.fullName!;
     Apphelper.USER_EMAIL = data.mail!;
     Apphelper.CHECK_STATUS = active_status;
+    Apphelper.totalWorkingHours = totalWorkingHours;
+
     // MyApp.userName=
-    print("kjfdgjk  ${data.fullName!}");
+    print("kjfdgjk  ${data.fullName!}   $totalWorkingHours");
 
     notifyListeners();
     return true;
@@ -132,7 +137,6 @@ class Preferences with ChangeNotifier {
   Future<String> getToken() async {
     final prefs = await SharedPreferences.getInstance();
 
-   
     return prefs.getString(Apphelper.USER_TOKEN) ?? '';
   }
 

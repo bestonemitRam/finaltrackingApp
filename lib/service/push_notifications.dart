@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:app_settings/app_settings.dart';
 import 'package:bmitserp/data/source/datastore/preferences.dart';
+import 'package:bmitserp/screen/task/task_details.dart';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 
@@ -16,10 +17,10 @@ import 'package:bmitserp/main.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-class NotificationServices 
-{
+class NotificationServices {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
-  final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =  FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
   void requestNotificationPermission() async {
     NotificationSettings settings = await messaging.requestPermission(
         alert: true,
@@ -50,8 +51,7 @@ class NotificationServices
         android: androidInitializationSettings, iOS: iosInitializationSettings);
 
     await _flutterLocalNotificationsPlugin.initialize(initializationSetting,
-        onDidReceiveNotificationResponse: (payload) 
-        {
+        onDidReceiveNotificationResponse: (payload) {
       handleMessage(context, message);
     });
   }
@@ -64,13 +64,14 @@ class NotificationServices
         // DashboardController controller = Get.find();
         // controller.counter();
         print("sdfdsfg" + message.toString());
-        print("sdkfjhfkj" + message.notification!.title.toString());
+        print(" sdkfjhfkj " + message.notification!.title.toString());
         print(message.notification!.body.toString());
         print(message.data.toString());
 
-        print(message.data['id']);
-        print("dsfhfdg" + message.data['image']);
-        print(message.data['community_id']);
+        print(message.data['taskId']);
+        print("kdjfhgjk  ${message.data['taskId']}");
+        // print("dsfhfdg" + message.data['image']);
+        // print(message.data['community_id']);
         /* DashboardController controller=Get.find();
         controller.counter();*/
       }
@@ -139,7 +140,9 @@ class NotificationServices
     if (initialMessage != null) {
       handleMessage(context, initialMessage);
     }
-    FirebaseMessaging.onBackgroundMessage((message) async {});
+    FirebaseMessaging.onBackgroundMessage((message) async {
+      print("test app ");
+    });
 
     //when app ins background
     FirebaseMessaging.onMessageOpenedApp.listen((event) {
@@ -148,17 +151,9 @@ class NotificationServices
   }
 
   void handleMessage(BuildContext context, RemoteMessage message) {
-    /* print("dfhdfgfgfghfhgkj");
-   print(message.data['type']);
-   print("dfhdfgfgfghfhgkj");
-    if(int.parse(message.data['type'].toString()) <=3)
-   {*/
-
-    /* Navigator.push(context,
-          MaterialPageRoute(builder: (context) => MessageScreen
-          (
-            id: message.data['id'] ,
-          )));*/
-    // }
+    print("hit his method  ${message.data['taskId']}");
+    Get.to(DailyTaskDetails(
+      task_id: message.data['taskId'].toString(),
+    ));
   }
 }

@@ -12,11 +12,13 @@ import 'package:bmitserp/provider/taskprovider.dart';
 import 'package:bmitserp/screen/shop_module/create_shop_screen.dart';
 import 'package:bmitserp/screen/shop_module/selcet_shop.dart';
 import 'package:bmitserp/screen/shop_module/shop_list.dart';
+import 'package:bmitserp/screen/task/calendar.dart';
 import 'package:bmitserp/screen/task/task_details.dart';
 import 'package:bmitserp/utils/constant.dart';
 import 'package:bmitserp/widget/buttonborder.dart';
 import 'package:bmitserp/widget/leavescreen/issueleavesheet.dart';
 import 'package:bmitserp/widget/leavescreen/leave_list_detail_dashboard.dart';
+import 'package:bmitserp/widget/leavescreen/leavebutton.dart';
 import 'package:bmitserp/widget/radialDecoration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -38,6 +40,8 @@ class DailyTask extends StatefulWidget {
 
 class _MyWidgetState extends State<DailyTask> {
   final RetailerController controller = Get.put(RetailerController());
+  TextEditingController endDate = TextEditingController();
+  String endDateTime = '';
 
   var init = true;
   var isVisible = false;
@@ -54,7 +58,8 @@ class _MyWidgetState extends State<DailyTask> {
   Future<String> initialState() async {
     EasyLoading.show(status: "Loading", maskType: EasyLoadingMaskType.black);
     final taskprovider = Provider.of<MyTaskProvider>(context, listen: false);
-    final taskdata = await taskprovider.getDailyTask();
+    String formattedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    final taskdata = await taskprovider.getDailyTask(formattedDate);
 
     EasyLoading.dismiss(animation: true);
 
@@ -62,6 +67,16 @@ class _MyWidgetState extends State<DailyTask> {
       return "Loaded";
     }
     return "Loaded";
+  }
+
+  static String dateTime(String time) {
+    DateTime dt = DateTime.parse(time);
+
+    final localTime = dt.toLocal();
+    var inputDate = DateTime.parse(localTime.toString());
+    var outputFormat = DateFormat('dd-MM-yyyy ').format(inputDate);
+
+    return outputFormat;
   }
 
   @override
@@ -74,136 +89,277 @@ class _MyWidgetState extends State<DailyTask> {
       child: Container(
           decoration: RadialDecoration(),
           padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-          child: ListView.builder(
-            physics: NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: taskdata.length,
-            itemBuilder: (context, index) {
-              final task = taskdata[index];
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(10),
-                      bottomRight: Radius.circular(10)),
-                  child: Container(
-                    color: Colors.white12,
-                    padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+          child: Column(
+            children: [
+              // gaps(10),
+              // TextField(
+              //   controller: endDate,
+              //   style: TextStyle(color: Colors.white),
+              //   //editing controller of this TextField
+              //   cursorColor: Colors.white,
+              //   decoration: InputDecoration(
+              //     hintText: 'Filter Date',
+              //     hintStyle: TextStyle(color: Colors.white),
+              //     prefixIcon: Icon(Icons.calendar_month, color: Colors.white),
+              //     labelStyle: TextStyle(color: Colors.white),
+              //     fillColor: Colors.white24,
+              //     filled: true,
+              //     enabledBorder: OutlineInputBorder(
+              //         borderRadius: BorderRadius.only(
+              //             topLeft: Radius.circular(10),
+              //             topRight: Radius.circular(0),
+              //             bottomLeft: Radius.circular(0),
+              //             bottomRight: Radius.circular(10))),
+              //     focusedBorder: OutlineInputBorder(
+              //         borderRadius: BorderRadius.only(
+              //             topLeft: Radius.circular(10),
+              //             topRight: Radius.circular(0),
+              //             bottomLeft: Radius.circular(0),
+              //             bottomRight: Radius.circular(10))),
+              //     focusedErrorBorder: OutlineInputBorder(
+              //         borderRadius: BorderRadius.only(
+              //             topLeft: Radius.circular(10),
+              //             topRight: Radius.circular(0),
+              //             bottomLeft: Radius.circular(0),
+              //             bottomRight: Radius.circular(10))),
+              //     errorBorder: OutlineInputBorder(
+              //         borderRadius: BorderRadius.only(
+              //             topLeft: Radius.circular(10),
+              //             topRight: Radius.circular(0),
+              //             bottomLeft: Radius.circular(0),
+              //             bottomRight: Radius.circular(10))),
+              //   ),
+              //   readOnly: true,
+              //   //set it true, so that user will not able to edit text
+              //   onTap: () async {
+              //     DateTime? pickedDate = await showDatePicker(
+              //         context: context,
+              //         initialDate: DateTime.now(),
+              //         firstDate: DateTime(1950),
+              //         //DateTime.now() - not to allow to choose before today.
+              //         lastDate: DateTime(2100));
+
+              //     if (pickedDate != null) {
+              //       String formattedDate =
+              //           DateFormat('yyyy-MM-dd hh:mm:ss').format(pickedDate);
+
+              //       setState(() {
+              //         endDateTime = formattedDate;
+              //         endDate.text = dateTime(formattedDate);
+              //       });
+              //     } else {}
+              //   },
+              // ),
+
+              Visibility(
+                visible: true,
+                child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Row(
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
+                        Expanded(
+                            child: Padding(
+                          padding: EdgeInsets.only(right: 5),
+                          child: TextButton(
+                              style: TextButton.styleFrom(
+                                  backgroundColor: HexColor("#036eb7"),
+                                  shape: ButtonBorder()),
+                              onPressed: () async {
+                                DateTime? pickedDate = await showDatePicker(
+                                    context: context,
+                                    initialDate: DateTime.now(),
+                                    firstDate: DateTime(1950),
+                                    //DateTime.now() - not to allow to choose before today.
+                                    lastDate: DateTime(2100));
+
+                                if (pickedDate != null) {
+                                  String formattedDate =
+                                      DateFormat('yyyy-MM-dd')
+                                          .format(pickedDate);
+
+                                  final taskprovider =
+                                      Provider.of<MyTaskProvider>(context,
+                                          listen: false);
+                                  final taskdata = await taskprovider
+                                      .getDailyTask(formattedDate);
+
+                                  setState(() {
+                                    endDateTime = formattedDate;
+                                    endDate.text = dateTime(formattedDate);
+                                  });
+                                } else {}
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Text(
+                                  'Filter Date  : ${endDate.text}',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              )),
+                        )),
+                      ],
+                    )),
+              ),
+              taskdata.length > 0
+                  ? ListView.builder(
+                      physics: NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: taskdata.length,
+                      itemBuilder: (context, index) {
+                        final task = taskdata[index];
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(10),
+                                bottomRight: Radius.circular(10)),
+                            child: Container(
+                              color: Colors.white12,
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 5, vertical: 10),
                               child: Column(
-                                textBaseline: TextBaseline.alphabetic,
-                                crossAxisAlignment: CrossAxisAlignment.baseline,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        "Task : ",
-                                        maxLines: 1,
-                                        style: TextStyle(
-                                            color: Colors.white, fontSize: 15),
-                                      ),
-                                      Container(
-                                        width:
-                                            MediaQuery.of(context).size.width /
-                                                1.5,
-                                        child: Text(
-                                          "${task.taskName}",
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 3,
-                                          style: TextStyle(
-                                              color: HexColor("#036eb7"),
-                                              fontSize: 14),
-                                        ),
-                                      ),
-                                      Spacer(),
-                                      InkWell(
-                                        onTap: () {
-                                          Get.to(DailyTaskDetails(
-                                            task_id: task.id.toString(),
-                                          ));
-                                        },
-                                        child: Text(
-                                          "Details..",
-                                          maxLines: 1,
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 15),
+                                      Expanded(
+                                        child: Column(
+                                          textBaseline: TextBaseline.alphabetic,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.baseline,
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  "Task : ",
+                                                  maxLines: 1,
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 15),
+                                                ),
+                                                Container(
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width /
+                                                      1.5,
+                                                  child: Text(
+                                                    "${task.taskName}",
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    maxLines: 3,
+                                                    style: TextStyle(
+                                                        color:
+                                                            HexColor("#036eb7"),
+                                                        fontSize: 14),
+                                                  ),
+                                                ),
+                                                Spacer(),
+                                                InkWell(
+                                                  onTap: () {
+                                                    Get.to(DailyTaskDetails(
+                                                      task_id:
+                                                          task.id.toString(),
+                                                    ));
+                                                  },
+                                                  child: Text(
+                                                    "Details..",
+                                                    maxLines: 1,
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 15),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  "Task Date : ",
+                                                  maxLines: 1,
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 15),
+                                                ),
+                                                Container(
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width /
+                                                      2.5,
+                                                  child: Text(
+                                                    "${messageTime(task.startingDate)}",
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    maxLines: 1,
+                                                    style: TextStyle(
+                                                        color:
+                                                            HexColor("#036eb7"),
+                                                        fontSize: 14),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  "End Task Date : ",
+                                                  maxLines: 1,
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 15),
+                                                ),
+                                                Container(
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width /
+                                                      2.5,
+                                                  child: Text(
+                                                    "${messageTime(task.endingDate)}",
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    maxLines: 1,
+                                                    style: TextStyle(
+                                                        color:
+                                                            HexColor("#036eb7"),
+                                                        fontSize: 14),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            Divider(),
+                                            if (task.isTargetProductDetails
+                                                    .toString() ==
+                                                '1')
+                                              orders(task.targetProductDetails),
+                                          ],
                                         ),
                                       ),
                                     ],
                                   ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        "Task Date : ",
-                                        maxLines: 1,
-                                        style: TextStyle(
-                                            color: Colors.white, fontSize: 15),
-                                      ),
-                                      Container(
-                                        width:
-                                            MediaQuery.of(context).size.width /
-                                                2.5,
-                                        child: Text(
-                                          "${messageTime(task.startingDate)}",
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 1,
-                                          style: TextStyle(
-                                              color: HexColor("#036eb7"),
-                                              fontSize: 14),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        "End Task Date : ",
-                                        maxLines: 1,
-                                        style: TextStyle(
-                                            color: Colors.white, fontSize: 15),
-                                      ),
-                                      Container(
-                                        width:
-                                            MediaQuery.of(context).size.width /
-                                                2.5,
-                                        child: Text(
-                                          "${messageTime(task.endingDate)}",
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 1,
-                                          style: TextStyle(
-                                              color: HexColor("#036eb7"),
-                                              fontSize: 14),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Divider(),
-                                  if (task.isTargetProductDetails.toString() ==
-                                      '1')
-                                    orders(task.targetProductDetails),
                                 ],
                               ),
                             ),
-                          ],
+                          ),
+                        );
+                      },
+                    )
+                  : Container(
+                      height: 50.h,
+                      child: Center(
+                        child: Text(
+                          "Sorry! don't have a task",
+                          style: TextStyle(color: Colors.white),
                         ),
-                      ],
+                      ),
                     ),
-                  ),
-                ),
-              );
-            },
+            ],
           )),
     );
   }

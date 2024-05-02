@@ -45,7 +45,7 @@ class DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     super.initState();
-   
+
     notificationServices.requestNotificationPermission();
     notificationServices.firebaseInit(context);
     notificationServices.setupInteractMessage(context);
@@ -213,8 +213,6 @@ class DashboardScreenState extends State<DashboardScreen> {
     String version = packageInfo.version;
     String buildNumber = packageInfo.buildNumber;
 
-
-
     final remoteConfig = FirebaseRemoteConfig.instance;
 
     remoteConfig.setConfigSettings(RemoteConfigSettings(
@@ -315,13 +313,12 @@ class DashboardScreenState extends State<DashboardScreen> {
   }
 
   Future<bool> showExitPopup(context) async {
-    print("kfdjgkgjh");
     return await showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             content: SizedBox(
-              height: 90,
+              height: 14.h,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

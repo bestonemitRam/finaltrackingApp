@@ -52,7 +52,7 @@ class DashboardProvider with ChangeNotifier {
   final Map<String, dynamic> _attendanceList = {
     'check-in': '',
     'check-out': '',
-    'production_hour': '0 hr 0 min',
+    'production_hour': Apphelper.totalWorkingHours,
     'production-time': 0.0
   };
   Map<String, dynamic> get attendanceList {
@@ -291,6 +291,7 @@ class DashboardProvider with ChangeNotifier {
       if (responseData['status'] == true) {
         final service = FlutterBackgroundService();
         service.startService();
+        await sharedPref.setString(Apphelper.CHECK_STATUS, '1');
         Apphelper.CHECK_STATUS = '1';
 
         // updateAttendanceStatus(EmployeeAttendanceData(
@@ -321,7 +322,6 @@ class DashboardProvider with ChangeNotifier {
     }
   }
 
-  
   Future<CheckOutModel> checkOutAttendance() async {
     var uri = Uri.parse(APIURL.CHECK_Out_URL);
     Preferences preferences = Preferences();
@@ -356,8 +356,13 @@ class DashboardProvider with ChangeNotifier {
       if (response.statusCode == 200) {
         final service = FlutterBackgroundService();
         service.invoke("stopService");
+        await sharedPref.setString(Apphelper.CHECK_STATUS, '0');
+        Apphelper.CHECK_STATUS = '0';
 
         if (responseData['status'] == true) {
+          Apphelper.totalWorkingHours =
+              attendanceResponse.result!.attendanceData!.totalWorkingHours;
+
           updateAttendanceStatus(EmployeeAttendanceData(
               punchInTime:
                   attendanceResponse.result!.attendanceData!.punchInTime,
@@ -381,7 +386,6 @@ class DashboardProvider with ChangeNotifier {
   final Color leftBarColor = HexColor("#FFFFFF");
   final double width = 15;
 
-  
   BarChartGroupData makeGroupData(int x, double y1) {
     return BarChartGroupData(barsSpace: 4, x: x, barRods: [
       BarChartRodData(

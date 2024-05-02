@@ -66,6 +66,9 @@ class CheckAttendanceState extends State<CheckAttendance> {
     //handleStartStop();
     final attendanceList =
         Provider.of<DashboardProvider>(context).attendanceList;
+
+   
+    
     final pref = Provider.of<PrefProvider>(context);
     DateTime now = DateTime.now();
     String formattedDate = DateFormat('EEEE , MMMM d , yyyy').format(now);
@@ -107,10 +110,9 @@ class CheckAttendanceState extends State<CheckAttendance> {
                       : HexColor("#3b98cc").withOpacity(.5),
                   child: IconButton(
                       iconSize: 70,
-                      onPressed: () async 
-                      {
+                      onPressed: () async {
                         LocationPermission permission =
-                        await Geolocator.checkPermission();
+                            await Geolocator.checkPermission();
 
                         if (permission == LocationPermission.denied) {
                           showDialog(
@@ -254,10 +256,7 @@ class CheckAttendanceState extends State<CheckAttendance> {
                                       )
                                     ],
                                   ));
-                        }
-                         else {
-                       
-
+                        } else {
                           if (await pref.getUserAuth()) {
                             bool isAuthenticated =
                                 await AuthService.authenticateUser();

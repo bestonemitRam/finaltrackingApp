@@ -4,8 +4,11 @@ import 'package:bmitserp/model/addofflocationdatamodel.dart';
 import 'package:bmitserp/provider/inventoryprovider.dart';
 import 'package:bmitserp/provider/productprovider.dart';
 import 'package:bmitserp/provider/taskprovider.dart';
+import 'package:bmitserp/screen/task/task_details.dart';
 import 'package:bmitserp/service/push_notifications.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:fbroadcast/fbroadcast.dart';
+
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 
@@ -15,6 +18,7 @@ import 'dart:io';
 import 'package:bmitserp/utils/constant.dart';
 import 'package:bmitserp/utils/DatabaseHelper.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:flutter_broadcasts/flutter_broadcasts.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 
@@ -43,7 +47,9 @@ import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:intl/intl.dart';
+import 'package:keep_screen_on/keep_screen_on.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -53,16 +59,58 @@ import 'package:geolocator/geolocator.dart';
 
 import 'dart:ui';
 
+import 'package:wakelock/wakelock.dart';
+
 const fetchBackground = "fetchBackground";
 const getLocation = "getLocation";
 const checkLocationEnabled = "checkLocationEnabled";
 final dbHelper = DatabaseHelper();
 
 late SharedPreferences sharedPref;
+
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // BroadcastReceiver receiver = BroadcastReceiver(
+  //   names: <String>[
+  //     "de.kevlatus.flutter_broadcasts_example.demo_action",
+  //   ],
+  // );  // receiver.start();
+  // receiver.messages.listen(checkLocation());
+  FBroadcast.instance().stickyBroadcast("message", value: "data");
+
+  FBroadcast.instance().register("message", (value, callback) {
+    var data = value;
+    checkLocation();
+  });
+
+  if (message.data['taskId'] != null) {
+    Get.to(DailyTaskDetails(
+      task_id: message.data['taskId'].toString(),
+    ));
+  }
+
+  Timer.periodic(Duration(minutes: 2), (timer) async 
+  {
+    Position position = await determinePosition();
+    checklocation(position.latitude, position.longitude);
+  });
+}
+
+checkLocation() async {
+  final service = FlutterBackgroundService();
+  var isRunning = await service.isRunning();
+  if (!isRunning) {
+    service.startService();
+  }
+}
+
 // @pragma('vm:entry-point')
 // Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-
-//   print('Handling a background message ${message.messageId}');
+//   await setupFlutterNotifications();
+//   showFlutterNotification(message);
+//   // If you're going to use other Firebase services in the background, such as Firestore,
+//   // make sure you call `initializeApp` before using other Firebase services.
+//   print('Handling a background message ${message}');
 // }
 
 // /// Create a [AndroidNotificationChannel] for heads up notifications
@@ -128,115 +176,126 @@ late SharedPreferences sharedPref;
 // /// Initialize the [FlutterLocalNotificationsPlugin] package.
 // late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
-@pragma('vm:entry-point')
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  // await Firebase.initializeApp();
-
-  Position position = await determinePosition();
-  checklocation(position.latitude, position.longitude);
-}
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+  Wakelock.enable();
+
+  // Keep the screen on.
+  KeepScreenOn.turnOn();
 
   await Firebase.initializeApp(
     name: 'BMITS ERP',
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  // await Firebase.initializeApp();
+  //await Firebase.initializeApp();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
-  flutterLocalNotificationsPlugin
-      .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>()!
-      .requestNotificationsPermission();
+  // FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  //     FlutterLocalNotificationsPlugin();
+  // flutterLocalNotificationsPlugin
+  //     .resolvePlatformSpecificImplementation<
+  //         AndroidFlutterLocalNotificationsPlugin>()!
+  //     .requestNotificationsPermission();
 
-  await initializeService();
+   await initializeService();
   sharedPref = await SharedPreferences.getInstance();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
+  var status = await Permission.ignoreBatteryOptimizations.status;
+  if (!status.isGranted) {
+    var status = await Permission.ignoreBatteryOptimizations.request();
+
+    if (status.isGranted) {
+      debugPrint("Good, all your permission are granted, do some stuff");
+    } else {
+      debugPrint("Do stuff according to this permission was rejected");
+    }
+  }
 
   //FirebaseMessaging.onBackgroundMessage(_messageHandler);
 
-  // NotificationSettings settings =
-  //     await FirebaseMessaging.instance.requestPermission(
-  //   alert: true,
-  //   badge: true,
-  //   provisional: false,
-  //   sound: true,
-  // );
+  NotificationSettings settings =
+      await FirebaseMessaging.instance.requestPermission(
+    alert: true,
+    badge: true,
+    provisional: false,
+    sound: true,
+  );
 
-  // if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-  // } else {}
+  if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+  } else {}
 
-  // AwesomeNotifications().initialize(
-  //     'resource://drawable/app_icon',
-  //     [
-  //       NotificationChannel(
-  //           channelGroupKey: 'digital_hr_group',
-  //           channelKey: 'digital_hr_channel',
-  //           channelName: 'Digital Hr notifications',
-  //           channelDescription: 'Digital HR Alert',
-  //           defaultColor: Color(0xFF9D50DD),
-  //           ledColor: Colors.white)
-  //     ],
-  //     channelGroups: [
-  //       NotificationChannelGroup(
-  //           channelGroupKey: 'digital_hr_group', channelGroupName: 'HR group')
-  //     ],
-  //     debug: true);
+  AwesomeNotifications().initialize(
+      'resource://drawable/app_icon',
+      [
 
-  // AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
-  //   if (!isAllowed) {
-  //     AwesomeNotifications().requestPermissionToSendNotifications();
-  //   }
-  // });
+        NotificationChannel(
+            channelGroupKey: 'digital_hr_group',
+            channelKey: 'digital_hr_channel',
+            channelName: 'Digital Hr notifications',
+            channelDescription: 'Digital HR Alert',
+            defaultColor: Color(0xFF9D50DD),
+            ledColor: Colors.white)
+      ],
+      channelGroups: [
+        NotificationChannelGroup(
+            channelGroupKey: 'digital_hr_group', channelGroupName: 'HR group')
+      ],
+      debug: true);
+
+  AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
+    if (!isAllowed) {
+      AwesomeNotifications().requestPermissionToSendNotifications();
+    }
+  });
+  FirebaseMessaging.onMessage.listen((event) {
+  FlutterRingtonePlayer.play(
+    fromAsset: "assets/sound/beep.mp3",
+  );
 
   // FirebaseMessaging.onMessage.listen((event) {
   //   FlutterRingtonePlayer.play(
-  //     fromAsset: "assets/sound/beep.mp3",
+  //     fromAsset: "",
   //   );
-  //   try {
-  //     InAppNotification.show(
-  //       child: Card(
-  //         margin: const EdgeInsets.all(15),
-  //         child: ListTile(
-  //           shape:
-  //               RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-  //           leading: Container(
-  //               height: double.infinity, child: Icon(Icons.notifications)),
-  //           iconColor: HexColor("#011754"),
-  //           textColor: HexColor("#011754"),
-  //           minVerticalPadding: 10,
-  //           minLeadingWidth: 0,
-  //           tileColor: Colors.white,
-  //           title: Text(
-  //             event.notification!.title!,
-  //           ),
-  //           subtitle: Text(
-  //             event.notification!.body!,
-  //             style: TextStyle(color: Colors.grey),
-  //           ),
-  //         ),
-  //       ),
-  //       context: NavigationService.navigatorKey.currentState!.context,
-  //     );
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  // });
-
-  // FirebaseMessaging.onMessageOpenedApp.listen((message) {});
-  // ByteData data =
-  //     await PlatformAssetBundle().load('assets/ca/lets-encrypt-r3.pem');
-  // SecurityContext.defaultContext
-  //     .setTrustedCertificatesBytes(data.buffer.asUint8List());
-  
+    try {
+      InAppNotification.show(
+        child: Card(
+          margin: const EdgeInsets.all(15),
+          child: ListTile(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+            leading: Container(
+                height: double.infinity, child: Icon(Icons.notifications)),
+            iconColor: HexColor("#011754"),
+            textColor: HexColor("#011754"),
+            minVerticalPadding: 10,
+            minLeadingWidth: 0,
+            tileColor: Colors.white,
+            title: Text(
+              event.notification!.title!,
+            ),
+            subtitle: Text(
+              event.notification!.body!,
+              style: TextStyle(color: Colors.grey),
+            ),
+          ),
+        ),
+        context: NavigationService.navigatorKey.currentState!.context,
+      );
+    } catch (e) {
+      print(e);
+    }
+  });
+//assets/ca/lets-encrypt-r3.pem
+  FirebaseMessaging.onMessageOpenedApp.listen((message) {
+    print("dfgkjdjkfgjkdg  ${message}");
+  });
+  ByteData data =
+      await PlatformAssetBundle().load('assets/ca/lets-encrypt-r3.pem');
+  SecurityContext.defaultContext
+      .setTrustedCertificatesBytes(data.buffer.asUint8List());
 
   runApp(MyApp());
   configLoading();
@@ -447,6 +506,7 @@ Future<Position> determinePosition() async {
 }
 
 checklocation(double latitude, double longitude) async {
+  print("test code ");
   Preferences preferences = Preferences();
   String token = await preferences.getToken();
   int getUserID = await preferences.getUserId();
@@ -502,14 +562,6 @@ checklocation(double latitude, double longitude) async {
 
 Future<void> _messageHandler(RemoteMessage message) async {
   print('Handling a background message ${message.messageId}');
-  // final service = FlutterBackgroundService();
-
-  // var isRunning = await service.isRunning();
-  // // if (isRunning) {
-  // //   service.invoke("stopService");
-  // // }
-
-  // service.startService();
 
   // FlutterRingtonePlayer.play(
   //   fromAsset: "assets/sound/beep.mp3",
@@ -551,6 +603,13 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     });
 
     super.initState();
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  }
+
+  Future<void> _firebaseMessagingBackgroundHandler(
+      RemoteMessage message) async {
+    print('Background message received: ${message.notification?.body}');
+    // Handle background messages here
   }
 
   @override
