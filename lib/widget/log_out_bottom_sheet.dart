@@ -4,6 +4,7 @@ import 'package:bmitserp/screen/auth/login_screen.dart';
 import 'package:bmitserp/utils/navigationservice.dart';
 import 'package:bmitserp/widget/radialDecoration.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
@@ -63,6 +64,13 @@ class LogOutBottomSheetState extends State<LogOutBottomSheet> {
     });
   }
 
+  checkLocation() async {
+    print("dkjshgjhsdjkfgjksdhgfjk");
+    final service = FlutterBackgroundService();
+
+    service.invoke("stopService");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -111,6 +119,7 @@ class LogOutBottomSheetState extends State<LogOutBottomSheet> {
                               backgroundColor: HexColor("#036eb7"),
                               shape: ButtonBorder()),
                           onPressed: () async {
+                            checkLocation();
                             logout();
                             Apphelper.totalWorkingHours = "0 hr 0 min";
                           },

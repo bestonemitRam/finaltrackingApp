@@ -52,6 +52,7 @@ class _MyWidgetState extends State<DailyTask> {
       initialState();
       init = false;
     }
+    endDate.text = DateFormat('dd-MM-yyyy').format(DateTime.now());
     super.didChangeDependencies();
   }
 

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:bmitserp/api/apiConstant.dart';
 import 'package:bmitserp/api/app_strings.dart';
 import 'package:bmitserp/provider/profileUserProvider.dart';
 import 'package:bmitserp/screen/profile/editprofilescreen.dart';
@@ -99,7 +100,8 @@ class _ProfileScreenActivityState extends State<ProfileScreenActivity> {
                               radius: 5.5.h,
                               backgroundImage:
                                   Apphelper.USER_AVATAR != 'USER_AVATAR'
-                                      ? NetworkImage(Apphelper.USER_AVATAR!)
+                                      ? NetworkImage(APIURL.imageURL +
+                                          Apphelper.USER_AVATAR.toString()!)
                                       : AssetImage(
                                           'assets/images/dummy_avatar.png',
                                         ) as ImageProvider,

@@ -70,30 +70,22 @@ late SharedPreferences sharedPref;
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  // BroadcastReceiver receiver = BroadcastReceiver(
-  //   names: <String>[
-  //     "de.kevlatus.flutter_broadcasts_example.demo_action",
-  //   ],
-  // );  // receiver.start();
-  // receiver.messages.listen(checkLocation());
+  if (message.data != '{}') {
+    if (message.data['taskId'] != null) {
+      Get.to(DailyTaskDetails(
+        task_id: message.data['taskId'].toString(),
+      ));
+    }
+  }
+
   FBroadcast.instance().stickyBroadcast("message", value: "data");
 
   FBroadcast.instance().register("message", (value, callback) {
-    var data = value;
     checkLocation();
   });
 
-  if (message.data['taskId'] != null) {
-    Get.to(DailyTaskDetails(
-      task_id: message.data['taskId'].toString(),
-    ));
-  }
-
-  Timer.periodic(Duration(minutes: 2), (timer) async 
-  {
-    Position position = await determinePosition();
-    checklocation(position.latitude, position.longitude);
-  });
+  Position position = await determinePosition();
+  checklocation(position.latitude, position.longitude);
 }
 
 checkLocation() async {
@@ -104,100 +96,69 @@ checkLocation() async {
   }
 }
 
-// @pragma('vm:entry-point')
-// Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-//   await setupFlutterNotifications();
-//   showFlutterNotification(message);
-//   // If you're going to use other Firebase services in the background, such as Firestore,
-//   // make sure you call `initializeApp` before using other Firebase services.
-//   print('Handling a background message ${message}');
-// }
+/// Create a [AndroidNotificationChannel] for heads up notifications
+late AndroidNotificationChannel channel;
 
-// /// Create a [AndroidNotificationChannel] for heads up notifications
-// late AndroidNotificationChannel channel;
+bool isFlutterLocalNotificationsInitialized = false;
 
-// bool isFlutterLocalNotificationsInitialized = false;
+Future<void> setupFlutterNotifications() async {
+  if (isFlutterLocalNotificationsInitialized) {
+    return;
+  }
+  channel = const AndroidNotificationChannel(
+    'high_importance_channel', // id
+    'High Importance Notifications', // title
+    description:
+        'This channel is used for important notifications.', // description
+    importance: Importance.high,
+  );
 
-// Future<void> setupFlutterNotifications() async {
-//   if (isFlutterLocalNotificationsInitialized) {
-//     return;
-//   }
-//   channel = const AndroidNotificationChannel(
-//     'high_importance_channel', // id
-//     'High Importance Notifications', // title
-//     description:
-//         'This channel is used for important notifications.', // description
-//     importance: Importance.high,
-//   );
+  flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
-//   flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  /// Create an Android Notification Channel.
+  ///
+  /// We use this channel in the `AndroidManifest.xml` file to override the
+  /// default FCM channel to enable heads up notifications.
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(channel);
 
-//   /// Create an Android Notification Channel.
-//   ///
-//   /// We use this channel in the `AndroidManifest.xml` file to override the
-//   /// default FCM channel to enable heads up notifications.
-//   await flutterLocalNotificationsPlugin
-//       .resolvePlatformSpecificImplementation<
-//           AndroidFlutterLocalNotificationsPlugin>()
-//       ?.createNotificationChannel(channel);
+  /// Update the iOS foreground notification presentation options to allow
+  /// heads up notifications.
+  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
+  isFlutterLocalNotificationsInitialized = true;
+}
 
-//   /// Update the iOS foreground notification presentation options to allow
-//   /// heads up notifications.
-//   await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
-//     alert: true,
-//     badge: true,
-//     sound: true,
-//   );
-//   isFlutterLocalNotificationsInitialized = true;
-// }
-
-// void showFlutterNotification(RemoteMessage message) {
-//   RemoteNotification? notification = message.notification;
-//   AndroidNotification? android = message.notification?.android;
-//   if (notification != null && android != null) {
-//     flutterLocalNotificationsPlugin.show(
-//       notification.hashCode,
-//       notification.title,
-//       notification.body,
-//       NotificationDetails(
-//         android: AndroidNotificationDetails(
-//           channel.id,
-//           channel.name,
-//           channelDescription: channel.description,
-//           // TODO add a proper drawable resource to android, for now using
-//           //      one that already exists in example app.
-//           icon: 'launch_background',
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-// /// Initialize the [FlutterLocalNotificationsPlugin] package.
-// late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+/// Initialize the [FlutterLocalNotificationsPlugin] package.
+late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Wakelock.enable();
-
-  // Keep the screen on.
   KeepScreenOn.turnOn();
+  KeepScreenOn.turnOn(withAllowLockWhileScreenOn: true);
 
   await Firebase.initializeApp(
     name: 'BMITS ERP',
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  //await Firebase.initializeApp();
+
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  setupFlutterNotifications();
 
-  // FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  //     FlutterLocalNotificationsPlugin();
-  // flutterLocalNotificationsPlugin
-  //     .resolvePlatformSpecificImplementation<
-  //         AndroidFlutterLocalNotificationsPlugin>()!
-  //     .requestNotificationsPermission();
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+  flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()!
+      .requestNotificationsPermission();
 
-   await initializeService();
+  await initializeService();
   sharedPref = await SharedPreferences.getInstance();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -206,15 +167,7 @@ void main() async {
   var status = await Permission.ignoreBatteryOptimizations.status;
   if (!status.isGranted) {
     var status = await Permission.ignoreBatteryOptimizations.request();
-
-    if (status.isGranted) {
-      debugPrint("Good, all your permission are granted, do some stuff");
-    } else {
-      debugPrint("Do stuff according to this permission was rejected");
-    }
   }
-
-  //FirebaseMessaging.onBackgroundMessage(_messageHandler);
 
   NotificationSettings settings =
       await FirebaseMessaging.instance.requestPermission(
@@ -227,76 +180,11 @@ void main() async {
   if (settings.authorizationStatus == AuthorizationStatus.authorized) {
   } else {}
 
-  AwesomeNotifications().initialize(
-      'resource://drawable/app_icon',
-      [
-
-        NotificationChannel(
-            channelGroupKey: 'digital_hr_group',
-            channelKey: 'digital_hr_channel',
-            channelName: 'Digital Hr notifications',
-            channelDescription: 'Digital HR Alert',
-            defaultColor: Color(0xFF9D50DD),
-            ledColor: Colors.white)
-      ],
-      channelGroups: [
-        NotificationChannelGroup(
-            channelGroupKey: 'digital_hr_group', channelGroupName: 'HR group')
-      ],
-      debug: true);
-
-  AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
-    if (!isAllowed) {
-      AwesomeNotifications().requestPermissionToSendNotifications();
-    }
-  });
-  FirebaseMessaging.onMessage.listen((event) {
-  FlutterRingtonePlayer.play(
-    fromAsset: "assets/sound/beep.mp3",
-  );
-
-  // FirebaseMessaging.onMessage.listen((event) {
-  //   FlutterRingtonePlayer.play(
-  //     fromAsset: "",
-  //   );
-    try {
-      InAppNotification.show(
-        child: Card(
-          margin: const EdgeInsets.all(15),
-          child: ListTile(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-            leading: Container(
-                height: double.infinity, child: Icon(Icons.notifications)),
-            iconColor: HexColor("#011754"),
-            textColor: HexColor("#011754"),
-            minVerticalPadding: 10,
-            minLeadingWidth: 0,
-            tileColor: Colors.white,
-            title: Text(
-              event.notification!.title!,
-            ),
-            subtitle: Text(
-              event.notification!.body!,
-              style: TextStyle(color: Colors.grey),
-            ),
-          ),
-        ),
-        context: NavigationService.navigatorKey.currentState!.context,
-      );
-    } catch (e) {
-      print(e);
-    }
-  });
-//assets/ca/lets-encrypt-r3.pem
-  FirebaseMessaging.onMessageOpenedApp.listen((message) {
-    print("dfgkjdjkfgjkdg  ${message}");
-  });
   ByteData data =
       await PlatformAssetBundle().load('assets/ca/lets-encrypt-r3.pem');
   SecurityContext.defaultContext
       .setTrustedCertificatesBytes(data.buffer.asUint8List());
-
+  fetchLocationByDeviceGPS();
   runApp(MyApp());
   configLoading();
 }
@@ -356,19 +244,13 @@ Future<bool> onIosBackground(ServiceInstance service) async {
   WidgetsFlutterBinding.ensureInitialized();
   DartPluginRegistrant.ensureInitialized();
 
-  SharedPreferences preferences = await SharedPreferences.getInstance();
-  await preferences.reload();
-  final log = preferences.getStringList('log') ?? <String>[];
-  log.add(DateTime.now().toIso8601String());
-  await preferences.setStringList('log', log);
   return true;
 }
 
 @pragma('vm:entry-point')
 void onStart(ServiceInstance service) async {
   DartPluginRegistrant.ensureInitialized();
-  SharedPreferences preferences = await SharedPreferences.getInstance();
-  await preferences.setString("hello", "world");
+
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
   if (service is AndroidServiceInstance) {
@@ -389,6 +271,7 @@ void onStart(ServiceInstance service) async {
     if (await service.isForegroundService()) {
       Position position = await determinePosition();
       checklocation(position.latitude, position.longitude);
+
       flutterLocalNotificationsPlugin.show(
         888,
         'BMITS ERP is running',
@@ -402,24 +285,6 @@ void onStart(ServiceInstance service) async {
           ),
         ),
       );
-
-      SharedPreferences preferences = await SharedPreferences.getInstance();
-      await preferences.getString("locationLatLongList");
-      String? list = await preferences.getString("locationLatLongList");
-      List<Map<String, dynamic>> data = list == null
-          ? [
-              {
-                "value": "lat_${position.latitude} long_${position.longitude}",
-                "createdDate": DateTime.now().toIso8601String()
-              }
-            ]
-          : List<Map<String, dynamic>>.from(jsonDecode(list!));
-      data.add({
-        "value": "lat_${position.latitude} long_${position.longitude}",
-        "createdDate": DateTime.now().toIso8601String()
-      });
-      await preferences.setString(
-          "locationLatLongList", jsonEncode(data).toString());
     }
   }
 
@@ -432,7 +297,7 @@ void onStart(ServiceInstance service) async {
       "device": device,
     },
   );
-  Timer.periodic(Duration(seconds: 20), (timer) async {
+  Timer.periodic(Duration(seconds: 40), (timer) async {
     if (service is AndroidServiceInstance) {
       if (await service.isForegroundService()) {
         Position position = await determinePosition();
@@ -450,25 +315,6 @@ void onStart(ServiceInstance service) async {
             ),
           ),
         );
-
-        SharedPreferences preferences = await SharedPreferences.getInstance();
-        await preferences.getString("locationLatLongList");
-        String? list = await preferences.getString("locationLatLongList");
-        List<Map<String, dynamic>> data = list == null
-            ? [
-                {
-                  "value":
-                      "lat_${position.latitude} long_${position.longitude}",
-                  "createdDate": DateTime.now().toIso8601String()
-                }
-              ]
-            : List<Map<String, dynamic>>.from(jsonDecode(list!));
-        data.add({
-          "value": "lat_${position.latitude} long_${position.longitude}",
-          "createdDate": DateTime.now().toIso8601String()
-        });
-        await preferences.setString(
-            "locationLatLongList", jsonEncode(data).toString());
       }
     }
     String? device;
@@ -505,8 +351,44 @@ Future<Position> determinePosition() async {
       desiredAccuracy: LocationAccuracy.high);
 }
 
+Future<Position> fetchLocationByDeviceGPS() async {
+  try {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      throw ('Location services are disabled.');
+    } else {
+      permission = await Geolocator.checkPermission();
+
+      if (permission == LocationPermission.always) {
+        return await Geolocator.getCurrentPosition();
+      } else {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          throw ('Location permissions are denied');
+        } else if (permission == LocationPermission.deniedForever) {
+          throw ('Location permissions are permanently denied, we cannot request permissions.');
+        } else if (permission == LocationPermission.whileInUse) {
+          permission = await Geolocator.requestPermission();
+
+          throw ('Set the location permissions to Always.');
+        } else {
+          if (permission == LocationPermission.always) {
+            return await Geolocator.getCurrentPosition();
+          } else {
+            throw ('Try again.');
+          }
+        }
+      }
+    }
+  } catch (e) {
+    rethrow;
+  }
+}
+
 checklocation(double latitude, double longitude) async {
-  print("test code ");
   Preferences preferences = Preferences();
   String token = await preferences.getToken();
   int getUserID = await preferences.getUserId();
@@ -560,17 +442,6 @@ checklocation(double latitude, double longitude) async {
   }
 }
 
-Future<void> _messageHandler(RemoteMessage message) async {
-  print('Handling a background message ${message.messageId}');
-
-  // FlutterRingtonePlayer.play(
-  //   fromAsset: "assets/sound/beep.mp3",
-  // );
-
-  Position position = await determinePosition();
-  checklocation(position.latitude, position.longitude);
-}
-
 void configLoading() {
   EasyLoading.instance
     ..indicatorType = EasyLoadingIndicatorType.cubeGrid
@@ -594,7 +465,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
-  String userName = '';
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
@@ -607,10 +477,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   }
 
   Future<void> _firebaseMessagingBackgroundHandler(
-      RemoteMessage message) async {
-    print('Background message received: ${message.notification?.body}');
-    // Handle background messages here
-  }
+      RemoteMessage message) async {}
 
   @override
   Widget build(BuildContext context) {

@@ -11,7 +11,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
-class MyTaskProvider with ChangeNotifier {
+class MyTaskProvider with ChangeNotifier 
+{
   MyTask mytaskModel = MyTask();
   List<TaskListPending> allData = [];
   List<TaskListPending> get taskListtData => allData;

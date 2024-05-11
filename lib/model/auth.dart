@@ -42,6 +42,7 @@ class Auth with ChangeNotifier {
       if (response.statusCode == 200) {
         final responseJson = Loginresponse.fromJson(responseData);
         Preferences preferences = Preferences();
+        Apphelper.CHECK_STATUS = '0';
 
         await preferences.saveUser(responseJson.result!);
 
@@ -74,7 +75,7 @@ class Auth with ChangeNotifier {
       final responseData = json.decode(response.body);
       final responseJson = CheckAuthModel.fromJson(responseData);
 
-      print("kjdfbgj ${responseJson}  ${response.statusCode}  ");
+      print("kjdfbgj ${responseJson}  ${headers}  ");
       if (response.statusCode == 200) {
         Preferences preferences = Preferences();
         await preferences.checkAuth(
@@ -84,11 +85,10 @@ class Auth with ChangeNotifier {
                 ? responseJson.result!.punchData!.totalWorkingHours
                 : '0 hr 0 min');
         return responseJson;
-      } else 
-      {
+      } else {
         Preferences preferences = Preferences();
         preferences.clearPrefs();
-          Apphelper.totalWorkingHours = "0 hr 0 min";
+        Apphelper.totalWorkingHours = "0 hr 0 min";
         return responseJson;
       }
     } catch (error) {

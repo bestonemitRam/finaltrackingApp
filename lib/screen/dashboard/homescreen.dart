@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-
 import 'package:bmitserp/api/app_strings.dart';
 import 'package:bmitserp/data/source/network/model/login/User.dart';
 import 'package:bmitserp/provider/dashboardprovider.dart';
@@ -30,21 +29,17 @@ class HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _startBackgroundLocationUpdates();
-  
   }
 
   Future<void> _startBackgroundLocationUpdates() async {
     final service = FlutterBackgroundService();
-
     print("kdjfhgjkhg  ${Apphelper.CHECK_STATUS}");
+    if (Apphelper.CHECK_STATUS.toString() == "0") {
+      print("dfdsfg  ${Apphelper.CHECK_STATUS}");
 
-    if (Apphelper.CHECK_STATUS == "0") 
-    {
-     
       service.invoke("stopService");
     }
   }
-
 
   void didChangeDependencies() {
     loadDashboard();

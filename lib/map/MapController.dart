@@ -7,7 +7,7 @@ class MapController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // Add initial markers to the map
+ 
     addMarkers();
 
     
@@ -16,8 +16,8 @@ class MapController extends GetxController {
     
   }
 
-  void addMarkers() {
-    // Add markers to the map
+  void addMarkers()
+   {
     markers.addAll([
       Marker(
         markerId: MarkerId('marker1'),
@@ -36,7 +36,8 @@ class MapController extends GetxController {
         position: LatLng(22.3049, 70.8022), // Marker 2 position
         infoWindow: InfoWindow(title: 'Marker 2'), // Info window
       ),
-      // Add more markers as needed
+     
     ]);
+  
   }
 }

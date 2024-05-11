@@ -1,12 +1,5 @@
 class Apphelper {
-  // static String userName = 'userName';
-
-  // static String email = 'email';
-  // static String dob = 'dob';
-  // static String contact = 'contact';
-  // static String gendar = 'gendar';
-  // static String name = 'name';
-  // static String token = 'token';
+  
   static String USER_DOB = 'USER_DOB';
   static String USER_CONTACT = 'USER_CONTACT';
   static String USER_GENDAR = 'USER_GENDAR';

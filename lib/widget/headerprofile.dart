@@ -19,12 +19,7 @@ class HeaderState extends State<HeaderProfile> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<PrefProvider>(context);
-
-
-
-  
-
-    return GestureDetector(
+   return GestureDetector(
       onTap: () {
         pushNewScreen(context,
             screen: ChangeNotifierProvider<ProfileUserProvider>(

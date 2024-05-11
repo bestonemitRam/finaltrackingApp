@@ -117,7 +117,7 @@ class DashboardProvider with ChangeNotifier {
         //print("ldkfjghfg ${dashboardResponse.data!.punchData!}");
 
         if (dashboardResponse.data!.punchData != null) {
-          updateAttendanceStatus(dashboardResponse.data!.punchData!);
+          //  updateAttendanceStatus(dashboardResponse.data!.punchData!);
         }
 
         // makeWeeklyReport(dashboardResponse.data.employeeAttendanceData!);
@@ -256,7 +256,7 @@ class DashboardProvider with ChangeNotifier {
         return false;
       }
     } catch (e) {
-      print("dkjfgkjjkfgg ${e}");
+   
       rethrow;
     }
   }
@@ -287,8 +287,10 @@ class DashboardProvider with ChangeNotifier {
 
       final attendanceResponse =
           AttendanceStatusResponse.fromJson(responseData);
+     
 
       if (responseData['status'] == true) {
+       
         final service = FlutterBackgroundService();
         service.startService();
         await sharedPref.setString(Apphelper.CHECK_STATUS, '1');

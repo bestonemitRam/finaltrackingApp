@@ -18,10 +18,9 @@ class CompletedTaskScreen extends StatefulWidget {
 class _CompletedTaskScreenState extends State<CompletedTaskScreen> {
   MyTaskProvider _myTaskProvider = MyTaskProvider();
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-
+  void initState() 
+  {
+   super.initState();
     _myTaskProvider = Provider.of<MyTaskProvider>(context, listen: false);
     _myTaskProvider.getMyTask();
   }

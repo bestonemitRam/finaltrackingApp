@@ -133,7 +133,7 @@ class Preferences with ChangeNotifier {
     );
   }
 
-  /// GET_TOKEN
+
   Future<String> getToken() async {
     final prefs = await SharedPreferences.getInstance();
 

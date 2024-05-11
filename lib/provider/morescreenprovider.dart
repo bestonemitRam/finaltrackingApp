@@ -6,10 +6,12 @@ import 'package:bmitserp/data/source/datastore/preferences.dart';
 import 'package:bmitserp/data/source/network/model/logout/Logoutresponse.dart';
 import 'package:bmitserp/utils/constant.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:http/http.dart' as http;
 
 class MoreScreenProvider with ChangeNotifier {
   Future<Logoutresponse> logout() async {
+    
     var uri = Uri.parse(APIURL.LOG_OUT);
 
     Preferences preferences = Preferences();
@@ -38,4 +40,6 @@ class MoreScreenProvider with ChangeNotifier {
       throw e;
     }
   }
+
+
 }

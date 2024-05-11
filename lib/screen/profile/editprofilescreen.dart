@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:bmitserp/api/apiConstant.dart';
 import 'package:bmitserp/api/app_strings.dart';
 import 'package:bmitserp/api/updateProfile.dart';
 import 'package:bmitserp/utils/constant.dart';
@@ -199,7 +200,8 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                       backgroundImage: imagefiles != null
                           ? FileImage(File(imagefiles!.path))
                           : Apphelper.USER_AVATAR != "USER_AVATAR"
-                              ? NetworkImage(Apphelper.USER_AVATAR.toString())
+                              ? NetworkImage(APIURL.imageURL +
+                                  Apphelper.USER_AVATAR.toString())
                               : AssetImage('assets/images/dummy_avatar.png')
                                   as ImageProvider,
                       child: Align(

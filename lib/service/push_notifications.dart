@@ -152,8 +152,14 @@ class NotificationServices {
 
   void handleMessage(BuildContext context, RemoteMessage message) {
     print("hit his method  ${message.data['taskId']}");
-    Get.to(DailyTaskDetails(
-      task_id: message.data['taskId'].toString(),
-    ));
+
+    if (message.data != '{}') {
+      print("kjdhjgkkjh");
+      if (message.data['taskId'] != null) {
+        Get.to(DailyTaskDetails(
+          task_id: message.data['taskId'].toString(),
+        ));
+      }
+    }
   }
 }

@@ -18,7 +18,7 @@ class UpdateProfiles {
     String token = await preferences.getToken();
     int getUserID = await preferences.getUserId();
 
-    print("kjdfhgjh ${uri}");
+
 
     dynamic response;
     try {
@@ -34,7 +34,7 @@ class UpdateProfiles {
         request.headers.addAll(headers);
 
         final file = await http.MultipartFile.fromPath('avatar', avatar.path);
-        print("dgjfdlghkjg  ${gender}");
+      
 
         request.files.add(file);
         request.fields['full_name'] = name;
@@ -47,10 +47,10 @@ class UpdateProfiles {
         try {
           final streamedResponse = await request.send();
           final response = await http.Response.fromStream(streamedResponse);
-          print("kdjfhggf  ${response.statusCode}");
+         
 
           var out = jsonDecode(response.body);
-          print("check profile update ${out}");
+         
 
           if (response.statusCode == 201) {
             Fluttertoast.showToast(
@@ -63,9 +63,9 @@ class UpdateProfiles {
             Get.back();
             EasyLoading.dismiss(animation: true);
 
-            //   ScaffoldMessenger.of(context)
-            //       .showSnackBar(SnackBar(content: Text(response.message)));
-          } else {
+           
+          } else 
+          {
             EasyLoading.dismiss(animation: true);
             Fluttertoast.showToast(
                 msg: "Error !",
@@ -75,7 +75,7 @@ class UpdateProfiles {
                 fontSize: 16.0);
           }
         } catch (e) {
-          print(e);
+         
         }
 
         return Future.error('error');
@@ -98,7 +98,7 @@ class UpdateProfiles {
 
         final responseData = json.decode(response.body);
 
-        print("dkfghkfghkj${responseData}  ${response.statusCode}");
+      
         if (response.statusCode == 201)
          {
           EasyLoading.dismiss(animation: true);
@@ -109,10 +109,7 @@ class UpdateProfiles {
               timeInSecForIosWeb: 1,
               fontSize: 16.0);
           Get.back();
-          //  final responseJson = Profileresponse.fromJson(responseData);
-
-          // parseUser(responseJson.data);
-          // return responseJson;
+         
         }
          else 
          {
