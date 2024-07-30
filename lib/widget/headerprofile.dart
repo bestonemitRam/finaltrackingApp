@@ -1,13 +1,15 @@
 import 'package:bmitserp/api/apiConstant.dart';
 import 'package:bmitserp/api/app_strings.dart';
 import 'package:bmitserp/main.dart';
+import 'package:bmitserp/provider/notificationprovider.dart';
 import 'package:bmitserp/provider/prefprovider.dart';
 import 'package:bmitserp/provider/profileUserProvider.dart';
 import 'package:bmitserp/screen/profile/NotificationScreen.dart';
 import 'package:bmitserp/screen/profile/new_profileScreen.dart';
 
 import 'package:flutter/material.dart';
-import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
+import 'package:get/get.dart';
+
 import 'package:provider/provider.dart';
 
 class HeaderProfile extends StatefulWidget {
@@ -18,15 +20,16 @@ class HeaderProfile extends StatefulWidget {
 class HeaderState extends State<HeaderProfile> {
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<PrefProvider>(context);
-   return GestureDetector(
+    final notificationProvider = Provider.of<NotificationProvider>(context);
+    // notificationProvider.getNotification();
+
+    return GestureDetector(
       onTap: () {
-        pushNewScreen(context,
-            screen: ChangeNotifierProvider<ProfileUserProvider>(
-                create: (BuildContext context) => ProfileUserProvider(),
-                child: ProfileScreenActivity()),
-            withNavBar: false,
-            pageTransitionAnimation: PageTransitionAnimation.fade);
+        // Get.to(
+        //     () => ChangeNotifierProvider<ProfileUserProvider>(
+        //         create: (BuildContext context) => ProfileUserProvider(),
+        //         child: ProfileScreenActivity()),
+        //     transition: Transition.fade);
       },
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
@@ -41,7 +44,8 @@ class HeaderState extends State<HeaderProfile> {
                 width: 50,
                 height: 50,
                 fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
+                errorBuilder: (context, error, stackTrace)
+                 {
                   return Image.asset(
                     'assets/images/dummy_avatar.png',
                     width: 50,
@@ -74,17 +78,50 @@ class HeaderState extends State<HeaderProfile> {
               ),
             ),
             Spacer(),
-            IconButton(
-                onPressed: () {
-                  pushNewScreen(context,
-                      screen: NotificationScreen(),
-                      withNavBar: false,
-                      pageTransitionAnimation: PageTransitionAnimation.fade);
-                },
-                icon: const Icon(
-                  Icons.notifications,
-                  color: Colors.white,
-                )),
+           
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        Icons.notifications,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        Get.to(() => NotificationScreen(),
+                            transition: Transition.fade);
+                      },
+                    ),
+                    if (notificationProvider.unreadCount >= 0)
+                      Positioned(
+                        right: 10,
+                        child: Container(
+                          padding: EdgeInsets.all(1),
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          constraints: BoxConstraints(
+                            minWidth: 12,
+                            minHeight: 12,
+                          ),
+                          child: Text(
+                            '${notificationProvider.unreadCount}',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 8,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      )
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),

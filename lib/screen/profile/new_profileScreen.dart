@@ -79,86 +79,88 @@ class _ProfileScreenActivityState extends State<ProfileScreenActivity> {
             ),
             resizeToAvoidBottomInset: true,
             body: SingleChildScrollView(
-              child: Container(
-                child: Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(
-                        height: 5.h,
-                      ),
-                      CircleAvatar(
-                        radius: 6.5.h,
-                        backgroundColor: Colors.white,
-                        child: CircleAvatar(
-                          radius: 6.h,
-                          backgroundColor: Colors.grey.withOpacity(0.3),
-                          child: GestureDetector(
-                            onTap: () {},
-                            child: CircleAvatar(
-                              backgroundColor: Colors.grey,
-                              radius: 5.5.h,
-                              backgroundImage:
-                                  Apphelper.USER_AVATAR != 'USER_AVATAR'
-                                      ? NetworkImage(APIURL.imageURL +
-                                          Apphelper.USER_AVATAR.toString()!)
-                                      : AssetImage(
-                                          'assets/images/dummy_avatar.png',
-                                        ) as ImageProvider,
+              child: Card(
+                child: Container(
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(
+                          height: 5.h,
+                        ),
+                        CircleAvatar(
+                          radius: 6.5.h,
+                          backgroundColor: Colors.white,
+                          child: CircleAvatar(
+                            radius: 6.h,
+                            backgroundColor: Colors.grey.withOpacity(0.3),
+                            child: GestureDetector(
+                              onTap: () {},
+                              child: CircleAvatar(
+                                backgroundColor: Colors.grey,
+                                radius: 5.5.h,
+                                backgroundImage:
+                                    Apphelper.USER_AVATAR != 'USER_AVATAR'
+                                        ? NetworkImage(APIURL.imageURL +
+                                            Apphelper.USER_AVATAR.toString()!)
+                                        : AssetImage(
+                                            'assets/images/dummy_avatar.png',
+                                          ) as ImageProvider,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      SizedBox(
-                        height: 2.h,
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(left: 5.w),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                                padding: const EdgeInsets.all(5),
-                                child: Text(
-                                  Apphelper.USER_NAME ?? '',
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 20),
-                                )),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 0),
-                              child: Text(
-                                Apphelper.USER_EMAIL != "USER_EMAIL"
-                                    ? Apphelper.USER_EMAIL
-                                    : "" ?? '',
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 15),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 2),
-                              child: Text(
-                                Apphelper.USER_CONTACT != "USER_CONTACT"
-                                    ? Apphelper.USER_CONTACT
-                                    : "" ?? '',
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 15),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 2),
-                              child: Text(
-                                Apphelper.USER_ADDRESS != "USER_ADDRESS"
-                                    ? Apphelper.USER_ADDRESS
-                                    : "" ?? '',
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 15),
-                              ),
-                            )
-                          ],
+                        SizedBox(
+                          height: 2.h,
                         ),
-                      )
-                    ],
+                        Padding(
+                          padding: EdgeInsets.only(left: 5.w),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                  padding: const EdgeInsets.all(5),
+                                  child: Text(
+                                    Apphelper.USER_NAME ?? '',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 20),
+                                  )),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 0),
+                                child: Text(
+                                  Apphelper.USER_EMAIL != "USER_EMAIL"
+                                      ? Apphelper.USER_EMAIL
+                                      : "" ?? '',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 15),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 2),
+                                child: Text(
+                                  Apphelper.USER_CONTACT != "USER_CONTACT"
+                                      ? Apphelper.USER_CONTACT
+                                      : "" ?? '',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 15),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 2),
+                                child: Text(
+                                  Apphelper.USER_ADDRESS != "USER_ADDRESS"
+                                      ? Apphelper.USER_ADDRESS
+                                      : "" ?? '',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 15),
+                                ),
+                              )
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),

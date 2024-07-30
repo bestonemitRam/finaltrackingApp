@@ -13,7 +13,7 @@ class LocationStatus {
       return Future.error(
           'Please enable your location, it seems to be turned off.');
     }
-    print("cehck fgggh  ");
+
 
     permission = await Geolocator.checkPermission();
 

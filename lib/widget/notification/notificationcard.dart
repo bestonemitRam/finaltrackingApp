@@ -1,53 +1,36 @@
+import 'package:bmitserp/data/source/network/model/notification/NotificationResponse.dart';
 import 'package:bmitserp/widget/buttonborder.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class NotificationCard extends StatelessWidget {
-  final int id;
-  final String name;
-  final String month;
-  final String day;
-  final String desc;
+  final NotificationData items;
+  NotificationCard({required this.items});
+  static String dateTime(String time) {
+    print("fdgdhfgi ${time}");
+    DateTime dt = DateTime.parse(time);
+    print("converted gmt date >> " + dt.toString());
+    final localTime = dt.toLocal();
+    print("local modified date >> " + localTime.toString());
 
-  NotificationCard(
-      {required this.id,
-      required this.name,
-      required this.month,
-      required this.day,
-      required this.desc});
+    var inputDate = DateTime.parse(localTime.toString());
+    var outputFormat = DateFormat('dd-MM-yyyy hh:mm a').format(inputDate);
+
+    return outputFormat;
+  }
 
   @override
   Widget build(BuildContext context) {
+    var isread = items.readStatus == 0 ? false : true;
     return Card(
       shape: ButtonBorder(),
       elevation: 0,
-      color: Colors.white12,
+      color: isread ? Colors.white12 : const Color.fromARGB(255, 107, 106, 106),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 5),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.all(5),
-              child: Card(
-                shape: ButtonBorder(),
-                elevation: 0,
-                color: Colors.blueAccent,
-                child: Container(
-                  width: 50,
-                  height: 50,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        day,
-                        style: TextStyle(color: Colors.white, fontSize: 25),
-                      ),
-                      Text(month, style: TextStyle(color: Colors.white)),
-                    ],
-                  ),
-                ),
-              ),
-            ),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -57,7 +40,7 @@ class NotificationCard extends StatelessWidget {
                   children: [
                     Text(
                       softWrap: true,
-                      name,
+                      items.notificationTitle,
                       style: TextStyle(color: Colors.white, fontSize: 18),
                     ),
                     SizedBox(
@@ -66,7 +49,7 @@ class NotificationCard extends StatelessWidget {
                     Text(
                       overflow: TextOverflow.fade,
                       softWrap: true,
-                      desc,
+                      dateTime(items.createdAt),
                       style: TextStyle(color: Colors.white, fontSize: 12),
                     ),
                   ],

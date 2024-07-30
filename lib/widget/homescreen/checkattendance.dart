@@ -111,8 +111,7 @@ class CheckAttendanceState extends State<CheckAttendance> {
                   child: IconButton(
                       iconSize: 70,
                       onPressed: () async {
-                        LocationPermission permission =
-                            await Geolocator.checkPermission();
+                        LocationPermission permission = await Geolocator.checkPermission();
 
                         if (permission == LocationPermission.denied) {
                           showDialog(

@@ -2,7 +2,8 @@ import 'package:bmitserp/utils/constant.dart';
 import 'package:bmitserp/widget/log_out_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_web_browser/flutter_web_browser.dart';
-import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
+import 'package:get/get.dart';
+
 import 'package:bmitserp/widget/morescreen/createissuesheet.dart';
 
 class Services extends StatelessWidget {
@@ -48,11 +49,14 @@ class Services extends StatelessWidget {
                     builder: (context) {
                       return CreateIssueSheet();
                     });
-              } else {
-                pushNewScreen(context,
-                    screen: route,
-                    withNavBar: false,
-                    pageTransitionAnimation: PageTransitionAnimation.fade);
+              } else 
+              {
+                 Get.to(() => route, transition: Transition.fade);
+                // pushNewScreen(context,
+                //     screen: route,
+                //     withNavBar: false,
+                //     pageTransitionAnimation: PageTransitionAnimation.fade);
+              
               }
             },
             selected: true,

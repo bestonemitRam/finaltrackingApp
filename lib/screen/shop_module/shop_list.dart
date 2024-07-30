@@ -1,4 +1,5 @@
 import 'package:bmitserp/provider/leaveprovider.dart';
+import 'package:bmitserp/screen/data_not_found.dart';
 import 'package:bmitserp/screen/shop_module/list_ui.dart';
 
 import 'package:flutter/material.dart';
@@ -11,8 +12,7 @@ class ShopList extends StatelessWidget {
     final leaveData = Provider.of<LeaveProvider>(context, listen: true);
     final shops = leaveData.shoplist;
     if (shops.isNotEmpty) {
-      return 
-      ListView.builder(
+      return ListView.builder(
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           primary: false,
           physics: const NeverScrollableScrollPhysics(),
@@ -34,19 +34,15 @@ class ShopList extends StatelessWidget {
                   retailer_data: shops[i].retailer_data),
             );
           });
-  
-  
     } else {
       return Padding(
-        padding: EdgeInsets.only(top: 300),
+        padding: EdgeInsets.only(top: 5.h),
         child: Center(
           child: Container(
-            height: 50.h,
-            child: Text(
-              "",
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
+              child: NoDataFoundErrorScreens(
+            height: 50.0.h,
+            title: "No Data Found",
+          )),
         ),
       );
     }

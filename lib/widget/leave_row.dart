@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 
 class LeaveRow extends StatelessWidget {
   final int id;
@@ -11,7 +12,8 @@ class LeaveRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.only(topLeft: Radius.circular(10),bottomRight: Radius.circular(10)),
+      borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(10), bottomRight: Radius.circular(10)),
       child: Container(
         color: Colors.white12,
         padding: EdgeInsets.all(10),
@@ -31,8 +33,8 @@ class LeaveRow extends StatelessWidget {
               children: [
                 Text(
                   used.toString(),
-                  style: const TextStyle(
-                    fontSize: 35,
+                  style: TextStyle(
+                    fontSize: 23.sp,
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),

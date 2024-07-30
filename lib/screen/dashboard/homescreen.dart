@@ -4,12 +4,14 @@ import 'dart:io';
 import 'package:bmitserp/api/app_strings.dart';
 import 'package:bmitserp/data/source/network/model/login/User.dart';
 import 'package:bmitserp/provider/dashboardprovider.dart';
+import 'package:bmitserp/provider/notificationprovider.dart';
 import 'package:bmitserp/provider/prefprovider.dart';
+import 'package:bmitserp/screen/dashboard/progress.dart';
 import 'package:bmitserp/utils/constant.dart';
 import 'package:bmitserp/utils/locationstatus.dart';
 import 'package:bmitserp/widget/homescreen/checkattendance.dart';
 import 'package:bmitserp/widget/homescreen/overviewdashboard.dart';
-import 'package:bmitserp/widget/homescreen/weeklyreportchart.dart';
+
 import 'package:bmitserp/widget/radialDecoration.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -29,14 +31,13 @@ class HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _startBackgroundLocationUpdates();
+  
   }
 
   Future<void> _startBackgroundLocationUpdates() async {
     final service = FlutterBackgroundService();
     print("kdjfhgjkhg  ${Apphelper.CHECK_STATUS}");
-    if (Apphelper.CHECK_STATUS.toString() == "0") {
-      print("dfdsfg  ${Apphelper.CHECK_STATUS}");
-
+    if (Apphelper.CHECK_STATUS.toString() == "1") {
       service.invoke("stopService");
     }
   }
@@ -68,6 +69,8 @@ class HomeScreenState extends State<HomeScreen> {
       final dashboardProvider =
           await Provider.of<DashboardProvider>(context, listen: false)
               .getDashboardData();
+                final notificationProvider =
+          Provider.of<NotificationProvider>(context, listen: false).getNotification();
       return 'loaded';
     } catch (e) {
       print(e);
@@ -77,6 +80,7 @@ class HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    
     return WillPopScope(
         onWillPop: () => showExitPopup(context),
         child: Container(
@@ -100,6 +104,7 @@ class HomeScreenState extends State<HomeScreen> {
                     children: [
                       HeaderProfile(),
                       CheckAttendance(),
+                      ProgrsssTask(),
                       OverviewDashboard(),
                       // WeeklyReportChart()
                     ],

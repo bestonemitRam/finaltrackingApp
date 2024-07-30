@@ -85,6 +85,8 @@ class _MyWidgetState extends State<DailyTask> {
     final leaveData = Provider.of<MyTaskProvider>(context, listen: true);
     final taskdata = leaveData.taskModelData;
 
+    print("lkjfgkgfhjkjgf  ${taskdata.length}");
+
     return Container(
       decoration: RadialDecoration(),
       child: Container(
@@ -201,7 +203,7 @@ class _MyWidgetState extends State<DailyTask> {
                       ],
                     )),
               ),
-              taskdata.length > 0
+              taskdata.length >= 0
                   ? ListView.builder(
                       physics: NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
@@ -234,53 +236,6 @@ class _MyWidgetState extends State<DailyTask> {
                                               CrossAxisAlignment.baseline,
                                           children: [
                                             Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  "Task : ",
-                                                  maxLines: 1,
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 15),
-                                                ),
-                                                Container(
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width /
-                                                      1.5,
-                                                  child: Text(
-                                                    "${task.taskName}",
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    maxLines: 3,
-                                                    style: TextStyle(
-                                                        color:
-                                                            HexColor("#036eb7"),
-                                                        fontSize: 14),
-                                                  ),
-                                                ),
-                                                Spacer(),
-                                                InkWell(
-                                                  onTap: () {
-                                                    Get.to(DailyTaskDetails(
-                                                      task_id:
-                                                          task.id.toString(),
-                                                    ));
-                                                  },
-                                                  child: Text(
-                                                    "Details..",
-                                                    maxLines: 1,
-                                                    style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: 15),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            Row(
                                               children: [
                                                 Text(
                                                   "Task Date : ",
@@ -295,7 +250,7 @@ class _MyWidgetState extends State<DailyTask> {
                                                           .width /
                                                       2.5,
                                                   child: Text(
-                                                    "${messageTime(task.startingDate)}",
+                                                    "${messageTime(task.taskDate!)}",
                                                     overflow:
                                                         TextOverflow.ellipsis,
                                                     maxLines: 1,
@@ -310,7 +265,7 @@ class _MyWidgetState extends State<DailyTask> {
                                             Row(
                                               children: [
                                                 Text(
-                                                  "End Task Date : ",
+                                                  "Task Deadline : ",
                                                   maxLines: 1,
                                                   style: TextStyle(
                                                       color: Colors.white,
@@ -322,7 +277,7 @@ class _MyWidgetState extends State<DailyTask> {
                                                           .width /
                                                       2.5,
                                                   child: Text(
-                                                    "${messageTime(task.endingDate)}",
+                                                    "${messageTime(task.taskDeadline!)}",
                                                     overflow:
                                                         TextOverflow.ellipsis,
                                                     maxLines: 1,
@@ -335,10 +290,62 @@ class _MyWidgetState extends State<DailyTask> {
                                               ],
                                             ),
                                             Divider(),
-                                            if (task.isTargetProductDetails
-                                                    .toString() ==
-                                                '1')
-                                              orders(task.targetProductDetails),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    // if (status.toLowerCase() == "pending") {
+                                                    //   onLeaveCancelledClicked(id);
+                                                    // }
+                                                  },
+                                                  child: ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                    child: Container(
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              horizontal: 10,
+                                                              vertical: 5),
+                                                      color: getStatus(
+                                                          task.taskStatus!),
+                                                      child: Text(
+                                                        task.taskStatus!,
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 12),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Spacer(),
+                                                InkWell(
+                                                  onTap: () 
+                                                  {
+                                                    Get.to(DailyTaskDetails(
+                                                      task_id:  task.id.toString(),
+                                                    ));
+                                                  },
+                                                  child: Text(
+                                                    "Task Details..",
+                                                    maxLines: 1,
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 15),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+
+                                            // if (task.isTargetProductDetails
+                                            //         .toString() ==
+                                            //     '1')
+                                            // orders(task.targetProductDetails),
+                                            //orders()
                                           ],
                                         ),
                                       ),
@@ -365,81 +372,94 @@ class _MyWidgetState extends State<DailyTask> {
     );
   }
 
-  Widget orders(List<TargetProductDetails>? targetProductDetails) {
-    return targetProductDetails!.isNotEmpty
-        ? Card(
-            elevation: 0,
-            color: Colors.black38,
-            shape: ButtonBorder(),
-            child: Column(
+  Widget orders() {
+    return Card(
+      elevation: 0,
+      color: Colors.black38,
+      shape: ButtonBorder(),
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Expanded(
-                        child: Container(
-                          child: Text('Product Type',
-                              style: TextStyle(
-                                  fontSize: 16.sp, color: Colors.white),
-                              textAlign: TextAlign.start),
-                        ),
-                      ),
-                      Expanded(
-                        child: Container(
-                          child: Text('Target',
-                              style: TextStyle(
-                                  fontSize: 16.sp, color: Colors.white),
-                              textAlign: TextAlign.start),
-                        ),
-                      ),
-                    ],
+                Expanded(
+                  child: Container(
+                    child: Text('Product Type',
+                        style: TextStyle(fontSize: 16.sp, color: Colors.white),
+                        textAlign: TextAlign.start),
                   ),
                 ),
-                Container(
-                  child: ListView.builder(
-                    physics: NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: targetProductDetails!.length,
-                    itemBuilder: (context, index) {
-                      final data = targetProductDetails![index];
-                      return Padding(
-                        padding: EdgeInsets.only(left: 10, right: 10),
-                        child: Padding(
-                          padding: EdgeInsets.all(1),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  child: Text(
-                                      "${data.productName} ${data.typeName} ${data.uomName}   ",
-                                      style: TextStyle(
-                                          fontSize: 15, color: Colors.white),
-                                      textAlign: TextAlign.start),
-                                ),
-                              ),
-                              Expanded(
-                                child: Container(
-                                  child: Text('${data.targetQuantity} case',
-                                      style: TextStyle(
-                                          fontSize: 15, color: Colors.white),
-                                      textAlign: TextAlign.start),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
+                Expanded(
+                  child: Container(
+                    child: Text('Target',
+                        style: TextStyle(fontSize: 16.sp, color: Colors.white),
+                        textAlign: TextAlign.start),
                   ),
                 ),
               ],
             ),
-          )
-        : Center();
+          ),
+          Container(
+            child: ListView.builder(
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              //itemCount: targetProductDetails!.length,
+              itemCount: 2,
+              itemBuilder: (context, index) {
+                //final data = targetProductDetails![index];
+                return Padding(
+                  padding: EdgeInsets.only(left: 10, right: 10),
+                  child: Padding(
+                    padding: EdgeInsets.all(1),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Container(
+                            child: Text(
+                                // "${data.productName} ${data.typeName} ${data.uomName}   ",
+                                "productName typeName uomName",
+                                style: TextStyle(
+                                    fontSize: 15, color: Colors.white),
+                                textAlign: TextAlign.start),
+                          ),
+                        ),
+                        Expanded(
+                          child: Container(
+                            child: Text(
+                                // '${data.targetQuantity} case',
+                                'targetQuantity case ',
+                                style: TextStyle(
+                                    fontSize: 15, color: Colors.white),
+                                textAlign: TextAlign.start),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Color getStatus(String s) {
+    switch (s) {
+      case "achieved":
+        return Colors.green;
+
+      case "pending":
+        return Colors.orange;
+
+      default:
+        return Colors.orange;
+    }
   }
 
   static String messageTime(String time) {

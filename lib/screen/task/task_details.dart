@@ -28,44 +28,44 @@ class DailyTaskDetails extends StatefulWidget {
 class _MyWidgetState extends State<DailyTaskDetails> {
   TaskDetails taskDetails = TaskDetails();
   bool dataNotfound = false;
-  Future getDailyTaskDetails() async {
-    var uri = Uri.parse(APIURL.DAILY_TASK_DETAILS);
+  // Future getDailyTaskDetails() async {
+  //   var uri = Uri.parse(APIURL.DAILY_TASK_DETAILS);
 
-    Preferences preferences = Preferences();
-    String token = await preferences.getToken();
+  //   Preferences preferences = Preferences();
+  //   String token = await preferences.getToken();
 
-    int getUserID = await preferences.getUserId();
+  //   int getUserID = await preferences.getUserId();
 
-    Map<String, String> headers = {
-      'Accept': 'application/json; charset=UTF-8',
-      'user_token': '$token',
-      'user_id': '$getUserID',
-    };
+  //   Map<String, String> headers = {
+  //     'Accept': 'application/json; charset=UTF-8',
+  //     'user_token': '$token',
+  //     'user_id': '$getUserID',
+  //   };
 
-    try {
-      final response = await http.post(uri, headers: headers, body: {
-        'task_id': widget.task_id,
-      });
+  //   try {
+  //     final response = await http.post(uri, headers: headers, body: {
+  //       'task_id': widget.task_id,
+  //     });
 
-      final responseData = json.decode(response.body);
+  //     final responseData = json.decode(response.body);
 
-      if (response.statusCode == 200) {
-        setState(() {
-          dataNotfound = true;
-          taskDetails = TaskDetails.fromJson(responseData);
-        });
-      } else {
-        setState(() {
-          dataNotfound = true;
-          taskDetails = TaskDetails.fromJson(responseData);
-        });
-      }
-    } catch (e) {}
-  }
+  //     if (response.statusCode == 200) {
+  //       setState(() {
+  //         dataNotfound = true;
+  //         taskDetails = TaskDetails.fromJson(responseData);
+  //       });
+  //     } else {
+  //       setState(() {
+  //         dataNotfound = true;
+  //         taskDetails = TaskDetails.fromJson(responseData);
+  //       });
+  //     }
+  //   } catch (e) {}
+  // }
 
   @override
   void initState() {
-    getDailyTaskDetails();
+   
     super.initState();
   }
 

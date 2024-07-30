@@ -26,6 +26,7 @@
   
 
   <application
+     android:requestLegacyExternalStorage="true"
      android:enableOnBackInvokedCallback="true"
         android:label="BMITS ERP"
         android:name="${applicationName}"
@@ -70,6 +71,8 @@
             android:foregroundServiceType="location"
         />
 
+        <meta-data android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
         <meta-data android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBvbt_XselhEKjHeAihYwcWz0cGW8eVokw"/>
                     <meta-data

@@ -38,12 +38,12 @@ class RetailerController extends GetxController {
   Rx<File?> imageFiless = Rx<File?>(null);
 
   Future<void> pickImage() async {
-    addressController.clear();
     fetchCurrentAddress();
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.camera);
     if (pickedFile != null) {
       imageFile.value = File(pickedFile.path);
+      print("djkhfgkjdfghjk  ${imageFile.value}");
     }
   }
 
@@ -426,7 +426,6 @@ class RetailerController extends GetxController {
           final streamedResponse = await request.send();
           final response = await http.Response.fromStream(streamedResponse)
               .timeout(Duration(seconds: 60));
-         
 
           var out = jsonDecode(response.body);
 

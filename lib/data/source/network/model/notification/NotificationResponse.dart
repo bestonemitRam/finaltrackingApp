@@ -1,29 +1,65 @@
-import 'NotifiactionDomain.dart';
-
 class NotificationResponse {
-  NotificationResponse({
-    required this.data,
-    required this.status,
-    required this.statusCode,
-  });
+  bool? status;
+  dynamic? message;
+  List<NotificationData>? result;
 
-  factory NotificationResponse.fromJson(dynamic json) {
-    return NotificationResponse(
-        status: json['status'],
-        statusCode: json['status_code'],
-        data: List<NotifiactionDomain>.from(
-            json['data'].map((x) => NotifiactionDomain.fromJson(x))));
+  NotificationResponse({this.status, this.message, this.result});
+
+  NotificationResponse.fromJson(Map<dynamic, dynamic> json) {
+    status = json['status'];
+    message = json['message'];
+    if (json['result'] != null) {
+      result = <NotificationData>[];
+      json['result'].forEach((v) {
+        result!.add(new NotificationData.fromJson(v));
+      });
+    }
   }
 
-  List<NotifiactionDomain> data;
-  bool status;
-  int statusCode;
+  Map<dynamic, dynamic> toJson() {
+    final Map<dynamic, dynamic> data = new Map<dynamic, dynamic>();
+    data['status'] = this.status;
+    data['message'] = this.message;
+    if (this.result != null) {
+      data['result'] = this.result!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
 
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['data'] = data.map((v) => v.toJson()).toList();
-    map['status'] = status;
-    map['status_code'] = statusCode;
-    return map;
+class NotificationData{
+  int? id;
+  dynamic? notificationTitle;
+  dynamic? notificationType;
+  int? notificationId;
+  int? readStatus;
+  dynamic? createdAt;
+
+  NotificationData(
+      {this.id,
+      this.notificationTitle,
+      this.notificationType,
+      this.notificationId,
+      this.readStatus,
+      this.createdAt});
+
+  NotificationData.fromJson(Map<dynamic, dynamic> json) {
+    id = json['id'];
+    notificationTitle = json['notification_title'];
+    notificationType = json['notification_type'];
+    notificationId = json['notification_id'];
+    readStatus = json['read_status'];
+    createdAt = json['created_at'];
+  }
+
+  Map<dynamic, dynamic> toJson() {
+    final Map<dynamic, dynamic> data = new Map<dynamic, dynamic>();
+    data['id'] = this.id;
+    data['notification_title'] = this.notificationTitle;
+    data['notification_type'] = this.notificationType;
+    data['notification_id'] = this.notificationId;
+    data['read_status'] = this.readStatus;
+    data['created_at'] = this.createdAt;
+    return data;
   }
 }

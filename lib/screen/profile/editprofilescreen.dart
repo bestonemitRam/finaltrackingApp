@@ -204,6 +204,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                                   Apphelper.USER_AVATAR.toString())
                               : AssetImage('assets/images/dummy_avatar.png')
                                   as ImageProvider,
+                    
                       child: Align(
                         alignment: Alignment.bottomRight,
                         child: InkWell(
@@ -534,6 +535,7 @@ class EditProfileScreenState extends State<EditProfileScreen> {
                     ),
                   ),
                 ),
+              
               ],
             ),
           ),

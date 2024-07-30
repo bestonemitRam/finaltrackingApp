@@ -73,5 +73,8 @@ class APIURL {
       "$API_URL/sales/locationSaverOffData";
 
   static const String DAILY_TASK = "$API_URL/task/taskList";
-  static const String DAILY_TASK_DETAILS = "$API_URL/task/taskDetails";
+  static const String DAILY_TASK_DETAILS = "$API_URL/task/taskDetails/";
+   static const String allNotifications = "$API_URL/notifications/getAll";
+   static const String changeStatusToReadNotifications= "$API_URL/notification/changeStatusToRead/";
+   
 }

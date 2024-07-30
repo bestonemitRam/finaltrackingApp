@@ -76,13 +76,11 @@ class LeaveScreenState extends State<LeaveScreen> {
       child: Scaffold(
           backgroundColor: Colors.transparent,
           body: SafeArea(
-           
             child: SingleChildScrollView(
               child: Container(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                   
                     LeaveListDashboard(),
                     Visibility(
                       visible: true,
@@ -106,8 +104,7 @@ class LeaveScreenState extends State<LeaveScreen> {
                               child: Padding(
                                 padding: const EdgeInsets.only(top: 50),
                                 child: Column(
-                                  children: 
-                                  [
+                                  children: [
                                     Visibility(
                                       visible: true,
                                       child: Padding(
@@ -117,8 +114,7 @@ class LeaveScreenState extends State<LeaveScreen> {
                                     ),
                                     Visibility(
                                         visible: true,
-                                        child: LeaveListdetailDashboard()
-                                        ),
+                                        child: LeaveListdetailDashboard()),
                                   ],
                                 ),
                               ),

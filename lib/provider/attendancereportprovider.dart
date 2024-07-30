@@ -38,6 +38,7 @@ class AttendanceReportProvider with ChangeNotifier {
   ];
 
   var isLoading = false;
+
   get loader {
     return isLoading;
   }
@@ -70,13 +71,15 @@ class AttendanceReportProvider with ChangeNotifier {
 
       // getProdHour(responseJson.data.employeeTodayAttendance.checkInAt,responseJson.data.employeeTodayAttendance.checkOutAt);
     } catch (error) {
-      isLoading = false;
+      loaderbar(false);
+      //  isLoading = false;
       throw error;
     }
   }
 
-  loaderbar(bool isLoading) {
-    isLoading = isLoading;
+  loaderbar(bool isLoadingdata) {
+    print("print oeiuwryert  ${isLoadingdata} ");
+    isLoading = isLoadingdata;
 
     notifyListeners();
   }

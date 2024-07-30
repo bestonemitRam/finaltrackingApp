@@ -15,12 +15,9 @@ import 'package:bmitserp/utils/constant.dart';
 class Auth with ChangeNotifier {
   Future<Loginresponse> login(String username, String password) async {
     var uri = Uri.parse(APIURL.LOGIN_API);
-
     Map<String, String> headers = {"Accept": "application/json; charset=UTF-8"};
-
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-
     try {
       var fcm = await FirebaseMessaging.instance.getToken();
       Map<String, dynamic> Requestbody = {
@@ -77,6 +74,7 @@ class Auth with ChangeNotifier {
 
       print("kjdfbgj ${responseJson}  ${headers}  ");
       if (response.statusCode == 200) {
+        print("kjdfbgj ${responseJson.result!.userData!.userToken}   ");
         Preferences preferences = Preferences();
         await preferences.checkAuth(
             responseJson.result!.userData!,

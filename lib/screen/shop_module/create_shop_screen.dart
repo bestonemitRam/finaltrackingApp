@@ -43,6 +43,12 @@ class CreateShopScreenState extends State<CreateShopScreen> {
     // TODO: implement initState
     super.initState();
   }
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    controller.addressController.clear();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

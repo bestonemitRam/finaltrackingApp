@@ -137,7 +137,8 @@ class AttendanceBottomSheetState extends State<AttedanceBottomSheet> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) 
+  {
     return WillPopScope(
       onWillPop: () async {
         return !isLoading;

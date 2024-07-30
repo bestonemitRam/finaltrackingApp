@@ -18,7 +18,7 @@ import 'package:bmitserp/utils/constant.dart';
 import 'package:bmitserp/utils/locationstatus.dart';
 import 'package:bmitserp/utils/wifiinfo.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:fl_chart/fl_chart.dart';
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
@@ -40,7 +40,8 @@ class DashboardProvider with ChangeNotifier {
     'total_task': '0',
   };
 
-  final Map<String, double> locationStatus = {
+  final Map<String, double> locationStatus = 
+  {
     'latitude': 0.0,
     'longitude': 0.0,
   };
@@ -70,18 +71,8 @@ class DashboardProvider with ChangeNotifier {
     super.dispose();
   }
 
-  List<BarChartGroupData> barchartValue = [];
-  List<BarChartGroupData> rawBarGroups = [];
-  List<BarChartGroupData> showingBarGroups = [];
 
-  void buildgraph() {
-    const int daysInWeek = 7;
-    for (int i = 0; i < daysInWeek; i++) {
-      barchartValue.add(makeGroupData(i, 0));
-    }
-    rawBarGroups.addAll(barchartValue);
-    showingBarGroups.addAll(rawBarGroups);
-  }
+  
 
   Future<HomeScreenModel> getDashboardData() async {
     var uri = Uri.parse(APIURL.HOME_PAGE_URL);
@@ -107,34 +98,20 @@ class DashboardProvider with ChangeNotifier {
 
       final responseData = json.decode(response.body);
 
-      print("fdjgkjfgk  ${response.statusCode}  ${responseData}");
+   
 
       if (response.statusCode == 200) {
         final dashboardResponse = HomeScreenModel.fromJson(responseData);
         debugPrint(dashboardResponse.toString());
 
         updateOverView(dashboardResponse.data!);
-        //print("ldkfjghfg ${dashboardResponse.data!.punchData!}");
+       
 
         if (dashboardResponse.data!.punchData != null) {
-          //  updateAttendanceStatus(dashboardResponse.data!.punchData!);
+         
         }
 
-        // makeWeeklyReport(dashboardResponse.data.employeeAttendanceData!);
-        // DateTime startTime = DateFormat("hh:mm a")
-        //     .parse(dashboardResponse.data!.officeData!.openingTime);
-        // DateTime endTime = DateFormat("hh:mm a")
-        //     .parse(dashboardResponse.data!.officeData!.closingTime);
-        // await AwesomeNotifications().cancelAllSchedules();
-        // for (var shift in dashboardResponse.data.shift_dates)
-        //  {
-        //   scheduleNewNotification(shift, "Please check in on time ⏱️⌛️",  startTime.hour, startTime.minute);
-        //   scheduleNewNotification(
-        //       shift,
-        //       "Almost done with your shift 😄⌛️ Remember to checkout ⏱️",
-        //       endTime.hour,
-        //       endTime.minute);
-        // }
+       
         return dashboardResponse;
       } else {
         var errorMessage = responseData['message'];
@@ -160,16 +137,17 @@ class DashboardProvider with ChangeNotifier {
       }
     }
 
-    barchartValue.clear();
-    rawBarGroups.clear();
-    showingBarGroups.clear();
-    for (int i = 0; i < _weeklyReport.length; i++) {
-      barchartValue.add(makeGroupData(i, _weeklyReport[i].toDouble()));
-    }
-    rawBarGroups.addAll(barchartValue);
-    showingBarGroups.addAll(rawBarGroups);
-    notifyListeners();
-  }
+  //   barchartValue.clear();
+  //   rawBarGroups.clear();
+  //   showingBarGroups.clear();
+  //   for (int i = 0; i < _weeklyReport.length; i++) 
+  //   {
+  //    // barchartValue.add(makeGroupData(i, _weeklyReport[i].toDouble()));
+  //   }
+  //   rawBarGroups.addAll(barchartValue);
+  //   showingBarGroups.addAll(rawBarGroups);
+  //   notifyListeners();
+   }
 
   void updateAttendanceStatus(EmployeeAttendanceData employeeTodayAttendance) {
     List<String> parts = employeeTodayAttendance.punchInTime!.split(' ');
@@ -250,12 +228,14 @@ class DashboardProvider with ChangeNotifier {
       if (locationStatus['latitude'] != 0.0 &&
           locationStatus['longitude'] != 0.0) {
         return true;
-      } else {
+      } else 
+      {
         Future.error(
             'Location is not detected. Please check if location is enabled and try again.');
         return false;
       }
-    } catch (e) {
+    } catch (e)
+     {
    
       rethrow;
     }
@@ -385,16 +365,8 @@ class DashboardProvider with ChangeNotifier {
     }
   }
 
-  final Color leftBarColor = HexColor("#FFFFFF");
-  final double width = 15;
+  // final Color leftBarColor = HexColor("#FFFFFF");
+  // final double width = 15;
 
-  BarChartGroupData makeGroupData(int x, double y1) {
-    return BarChartGroupData(barsSpace: 4, x: x, barRods: [
-      BarChartRodData(
-        toY: y1,
-        color: leftBarColor,
-        width: width,
-      ),
-    ]);
-  }
+
 }

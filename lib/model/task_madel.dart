@@ -1,7 +1,6 @@
-class TaskModel 
-{
-  bool? status;
-  dynamic message;
+class TaskModel {
+  int? status;
+  String? message;
   List<TaskModelData>? result;
 
   TaskModel({this.status, this.message, this.result});
@@ -28,77 +27,27 @@ class TaskModel
   }
 }
 
-class TaskModelData 
-{
+class TaskModelData {
   int? id;
-  dynamic taskName;
-  dynamic startingDate;
-  dynamic endingDate;
-  int? isTargetProductDetails;
-  List<TargetProductDetails>? targetProductDetails;
+  String? taskDate;
+  String? taskDeadline;
+  String? taskStatus;
 
-  TaskModelData(
-      {
-      this.id,
-      this.taskName,
-      this.startingDate,
-      this.endingDate,
-      this.isTargetProductDetails,
-      this.targetProductDetails
-      });
+  TaskModelData({this.id, this.taskDate, this.taskDeadline, this.taskStatus});
 
-  TaskModelData.fromJson(Map<String, dynamic> json)
-   {
+  TaskModelData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    taskName = json['task_name'];
-    startingDate = json['starting_date'];
-    endingDate = json['ending_date'];
-    isTargetProductDetails = json['is_target_product_details'];
-    if (json['target_product_details'] != null) {
-      targetProductDetails = <TargetProductDetails>[];
-      json['target_product_details'].forEach((v) {
-        targetProductDetails!.add(new TargetProductDetails.fromJson(v));
-      });
-    }
+    taskDate = json['task_date'];
+    taskDeadline = json['task_deadline'];
+    taskStatus = json['task_status'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
-    data['task_name'] = this.taskName;
-    data['starting_date'] = this.startingDate;
-    data['ending_date'] = this.endingDate;
-    data['is_target_product_details'] = this.isTargetProductDetails;
-    if (this.targetProductDetails != null) {
-      data['target_product_details'] =
-          this.targetProductDetails!.map((v) => v.toJson()).toList();
-    }
-    return data;
-  }
-}
-
-class TargetProductDetails {
-  dynamic targetQuantity;
-  dynamic productName;
-  dynamic typeName;
-  dynamic uomName;
-
-  TargetProductDetails(
-      {this.targetQuantity, this.productName, this.typeName, this.uomName});
-
-  TargetProductDetails.fromJson(Map<String, dynamic> json) {
-    targetQuantity = json['target_quantity'];
-    productName = json['product_name'];
-    typeName = json['type_name'];
-    uomName = json['uom_name'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['target_quantity'] = this.targetQuantity;
-    data['product_name'] = this.productName;
-    data['type_name'] = this.typeName;
-    data['uom_name'] = this.uomName;
+    data['task_date'] = this.taskDate;
+    data['task_deadline'] = this.taskDeadline;
+    data['task_status'] = this.taskStatus;
     return data;
   }
 }

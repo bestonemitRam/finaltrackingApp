@@ -59,7 +59,6 @@ class ListUi extends StatelessWidget {
                   child: Container(
                     width: 50,
                     height: 60,
-                   
                     child: ClipRRect(
                         borderRadius: BorderRadius.circular(10),
                         child: CachedNetworkImage(
@@ -69,9 +68,7 @@ class ListUi extends StatelessWidget {
                               Center(child: new CircularProgressIndicator()),
                           errorWidget: (context, url, error) =>
                               Icon(Icons.error),
-                        )
-                     
-                        ),
+                        )),
                   ),
                 ),
                 SizedBox(
@@ -83,6 +80,7 @@ class ListUi extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.baseline,
                     children: [
                       Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             "Shop Name : ",
@@ -92,7 +90,7 @@ class ListUi extends StatelessWidget {
                           Container(
                             width: MediaQuery.of(context).size.width / 2.8,
                             child: Text(
-                              "$retailerShopName?? " "",
+                              "$retailerShopName",
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
                               style: TextStyle(
@@ -102,13 +100,14 @@ class ListUi extends StatelessWidget {
                         ],
                       ),
                       Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             "Owner Name : ",
                             style: TextStyle(color: Colors.white, fontSize: 15),
                           ),
                           Container(
-                            width: MediaQuery.of(context).size.width / 2.8,
+                            //  width: MediaQuery.of(context).size.width / 2,
                             child: Text(
                               "$retailerName",
                               style: TextStyle(
@@ -133,55 +132,50 @@ class ListUi extends StatelessWidget {
                           ),
                         ],
                       ),
-                      if (retailerAddress != "")
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Shop Address : ",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 15),
-                            ),
-                            Container(
-                              width: MediaQuery.of(context).size.width / 2.8,
-                              child: Text(
-                                "$retailerAddress",
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 10,
-                                style: TextStyle(
-                                    color: HexColor("#036eb7"), fontSize: 14),
-                              ),
-                            ),
-                          ],
-                        ),
                     ],
                   ),
                 ),
-                if (isVarified == 0)
-                  GestureDetector(
-                      onTap: () {
-                        Get.to(EditRetailer(
-                            id: id,
-                            retailerName: retailerName,
-                            retailerShopName: retailerShopName,
-                            retailerAddress: retailerAddress,
-                            retailerLatitude: retailerLatitude,
-                            retailerLongitude: retailerLongitude,
-                            retailerShopImage: retailerShopImage,
-                            retailerContact: retailerContact,
-                            isVarified: isVarified,
-                            retailer_data: retailer_data));
-                      },
-                      child: Icon(
-                        Icons.edit_square,
-                        color: Colors.white,
-                      ))
+                // if (isVarified == 0)
+                //   GestureDetector(
+                //       onTap: () {
+                //         Get.to(EditRetailer(
+                //             id: id,
+                //             retailerName: retailerName,
+                //             retailerShopName: retailerShopName,
+                //             retailerAddress: retailerAddress,
+                //             retailerLatitude: retailerLatitude,
+                //             retailerLongitude: retailerLongitude,
+                //             retailerShopImage: retailerShopImage,
+                //             retailerContact: retailerContact,
+                //             isVarified: isVarified,
+                //             retailer_data: retailer_data));
+                //       },
+                //       child: Icon(
+                //         Icons.edit_square,
+                //         color: Colors.white,
+                //       ))
               ],
             ),
-            SizedBox(
-              height: 1.h,
-            ),
+            if (retailerAddress != "")
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Shop Address : ",
+                    style: TextStyle(color: Colors.white, fontSize: 15),
+                  ),
+                  Container(
+                    child: Text(
+                      "$retailerAddress",  
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 10,
+                      style:
+                          TextStyle(color: HexColor("#036eb7"), fontSize: 14),
+                    ),
+                  ),
+                ],
+              ),
             Row(
               children: [
                 GestureDetector(
@@ -222,8 +216,7 @@ class ListUi extends StatelessWidget {
                   width: 1.w,
                 ),
                 GestureDetector(
-                  onTap: () 
-                  {
+                  onTap: () {
                     Get.to(OrderListingScreen(id: id!));
                   },
                   child: ClipRRect(
@@ -239,6 +232,28 @@ class ListUi extends StatelessWidget {
                     ),
                   ),
                 ),
+                Spacer(),
+                GestureDetector(
+                    onTap: () {
+                      Get.to(EditRetailer(
+                          id: id,
+                          retailerName: retailerName,
+                          retailerShopName: retailerShopName,
+                          retailerAddress: retailerAddress,
+                          retailerLatitude: retailerLatitude,
+                          retailerLongitude: retailerLongitude,
+                          retailerShopImage: retailerShopImage,
+                          retailerContact: retailerContact,
+                          isVarified: isVarified,
+                          retailer_data: retailer_data));
+                    },
+                    child: Icon(
+                      Icons.edit_square,
+                      color: Colors.white,
+                    )),
+                SizedBox(
+                  width: 1.w,
+                ),
               ],
             )
           ],
@@ -246,19 +261,4 @@ class ListUi extends StatelessWidget {
       ),
     );
   }
-
-  // Color getStatus() {
-  //   switch (status) {
-  //     case "Approved":
-  //       return Colors.green;
-  //     case "Rejected":
-  //       return Colors.redAccent;
-  //     case "Pending":
-  //       return Colors.orange;
-  //     case "Cancelled":
-  //       return Colors.red;
-  //     default:
-  //       return Colors.orange;
-  //   }
-  // }
 }

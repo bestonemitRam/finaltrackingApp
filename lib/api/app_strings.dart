@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 class Apphelper {
   
   static String USER_DOB = 'USER_DOB';
@@ -14,4 +15,18 @@ class Apphelper {
   static String USER_ADDRESS = "USER_ADDRESS";
   static String CHECK_STATUS = "0";
   static String totalWorkingHours = "0 hr 0 min";
+
+  String greeting(BuildContext context) {
+    var hour = DateTime.now().hour;
+
+    if (hour >= 12 && hour < 17) {
+      return '${'Afternoon'}🌞';
+    } else if (hour >= 17 && hour < 21) {
+      return '${"Evening"}🌙';
+    } else if (hour >= 21 && hour < 3) {
+      return "${"Night"}🌜";
+    } else {
+      return '${"morning"}🌞';
+    }
+  }
 }

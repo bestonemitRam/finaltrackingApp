@@ -1,4 +1,5 @@
 import 'package:bmitserp/provider/attendancereportprovider.dart';
+import 'package:bmitserp/screen/data_not_found.dart';
 import 'package:bmitserp/widget/buttonborder.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -34,6 +35,7 @@ class ReportListView extends StatelessWidget {
             )),
       );
     } else {
+    
       return Provider.of<AttendanceReportProvider>(context).loader
           ? Visibility(
               visible: Provider.of<AttendanceReportProvider>(context).loader
@@ -46,13 +48,10 @@ class ReportListView extends StatelessWidget {
             )
           : Container(
               height: 50.h,
-              child: Center(
-                child: Text(
-                  "",
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            );
+              child: NoDataFoundErrorScreens(
+                height: 50.0.h,
+                title: "Sorry! Don't have a attendance",
+              ));
     }
   }
 
@@ -100,6 +99,4 @@ class ReportListView extends StatelessWidget {
       ),
     );
   }
-
-
 }

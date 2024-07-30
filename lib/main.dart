@@ -2,27 +2,28 @@ import 'package:bmitserp/api/apiConstant.dart';
 import 'package:bmitserp/firebase_options.dart';
 import 'package:bmitserp/model/addofflocationdatamodel.dart';
 import 'package:bmitserp/provider/inventoryprovider.dart';
+import 'package:bmitserp/provider/notificationprovider.dart';
 import 'package:bmitserp/provider/productprovider.dart';
 import 'package:bmitserp/provider/taskprovider.dart';
 import 'package:bmitserp/screen/task/task_details.dart';
-import 'package:bmitserp/service/push_notifications.dart';
-import 'package:device_info_plus/device_info_plus.dart';
+
+import 'package:bmitserp/utils/check_internet_connectvity.dart';
+
 import 'package:fbroadcast/fbroadcast.dart';
 
-import 'package:firebase_remote_config/firebase_remote_config.dart';
+
 import 'package:flutter/material.dart';
 
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:bmitserp/utils/constant.dart';
+
 import 'package:bmitserp/utils/DatabaseHelper.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
-import 'package:flutter_broadcasts/flutter_broadcasts.dart';
+
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:bmitserp/data/source/datastore/preferences.dart';
 import 'package:bmitserp/model/auth.dart';
 import 'package:bmitserp/provider/attendancereportprovider.dart';
@@ -42,9 +43,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_mentions/flutter_mentions.dart';
-import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
+
 import 'package:get/get.dart';
-import 'package:hexcolor/hexcolor.dart';
+
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:intl/intl.dart';
 import 'package:keep_screen_on/keep_screen_on.dart';
@@ -69,9 +70,11 @@ final dbHelper = DatabaseHelper();
 late SharedPreferences sharedPref;
 
 @pragma('vm:entry-point')
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async 
+{
   if (message.data != '{}') {
-    if (message.data['taskId'] != null) {
+    if (message.data['taskId'] != null)
+     {
       Get.to(DailyTaskDetails(
         task_id: message.data['taskId'].toString(),
       ));
@@ -81,20 +84,20 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   FBroadcast.instance().stickyBroadcast("message", value: "data");
 
   FBroadcast.instance().register("message", (value, callback) {
-    checkLocation();
+  //  checkLocation();
   });
 
   Position position = await determinePosition();
   checklocation(position.latitude, position.longitude);
 }
 
-checkLocation() async {
-  final service = FlutterBackgroundService();
-  var isRunning = await service.isRunning();
-  if (!isRunning) {
-    service.startService();
-  }
-}
+// checkLocation() async {
+//   final service = FlutterBackgroundService();
+//   var isRunning = await service.isRunning();
+//   if (!isRunning) {
+//     service.startService();
+//   }
+// }
 
 /// Create a [AndroidNotificationChannel] for heads up notifications
 late AndroidNotificationChannel channel;
@@ -115,17 +118,11 @@ Future<void> setupFlutterNotifications() async {
 
   flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
-  /// Create an Android Notification Channel.
-  ///
-  /// We use this channel in the `AndroidManifest.xml` file to override the
-  /// default FCM channel to enable heads up notifications.
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
 
-  /// Update the iOS foreground notification presentation options to allow
-  /// heads up notifications.
   await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
     alert: true,
     badge: true,
@@ -177,13 +174,13 @@ void main() async {
     sound: true,
   );
 
-  if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-  } else {}
+  // if (settings.authorizationStatus == AuthorizationStatus.authorized)
+  //  {
+  // } else {}
 
   ByteData data =
       await PlatformAssetBundle().load('assets/ca/lets-encrypt-r3.pem');
-  SecurityContext.defaultContext
-      .setTrustedCertificatesBytes(data.buffer.asUint8List());
+  SecurityContext.defaultContext.setTrustedCertificatesBytes(data.buffer.asUint8List());
   fetchLocationByDeviceGPS();
   runApp(MyApp());
   configLoading();
@@ -297,7 +294,7 @@ void onStart(ServiceInstance service) async {
       "device": device,
     },
   );
-  Timer.periodic(Duration(seconds: 40), (timer) async {
+  Timer.periodic(Duration(seconds: 30), (timer) async {
     if (service is AndroidServiceInstance) {
       if (await service.isForegroundService()) {
         Position position = await determinePosition();
@@ -347,8 +344,9 @@ Future<Position> determinePosition() async {
         'Location permissions are permanently denied, we cannot request permissions.');
   }
 
-  return await await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high);
+  return await Geolocator.getCurrentPosition(
+    desiredAccuracy: LocationAccuracy.high,
+  );
 }
 
 Future<Position> fetchLocationByDeviceGPS() async {
@@ -363,7 +361,9 @@ Future<Position> fetchLocationByDeviceGPS() async {
       permission = await Geolocator.checkPermission();
 
       if (permission == LocationPermission.always) {
-        return await Geolocator.getCurrentPosition();
+        return await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high,
+        );
       } else {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
@@ -376,7 +376,9 @@ Future<Position> fetchLocationByDeviceGPS() async {
           throw ('Set the location permissions to Always.');
         } else {
           if (permission == LocationPermission.always) {
-            return await Geolocator.getCurrentPosition();
+            return await Geolocator.getCurrentPosition(
+              desiredAccuracy: LocationAccuracy.high,
+            );
           } else {
             throw ('Try again.');
           }
@@ -418,11 +420,14 @@ checklocation(double latitude, double longitude) async {
         DateTime.now().millisecondsSinceEpoch);
   }
 
-  if (result == true) {
+  if (result == true) 
+  {
     final datalist = await dbHelper.fetchLocationData();
-    if (datalist.isNotEmpty) {
+    if (datalist.isNotEmpty) 
+    {
       addlocation.clear();
-      for (int i = 0; i < datalist.length; i++) {
+      for (int i = 0; i < datalist.length; i++) 
+      {
         addlocation.add(AddLocation(
             latitude: datalist[i]['latitude'].toString(),
             longitude: datalist[i]['longitude'].toString()));
@@ -468,16 +473,17 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
-    Timer.periodic(Duration(seconds: 3), (timer) {
-      Navigator.pushReplacementNamed(context, LoginScreen.routeName);
-    });
+    // Timer.periodic(Duration(seconds: 3), (timer)
+    //  {
+    //   Navigator.pushReplacementNamed(context, LoginScreen.routeName);
+    // });
 
     super.initState();
-    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+   // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   }
 
-  Future<void> _firebaseMessagingBackgroundHandler(
-      RemoteMessage message) async {}
+  // Future<void> _firebaseMessagingBackgroundHandler(
+  //     RemoteMessage message) async {}
 
   @override
   Widget build(BuildContext context) {
@@ -498,6 +504,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                 ),
                 ChangeNotifierProvider(
                   create: (ctx) => LeaveProvider(),
+                ),
+                ChangeNotifierProvider(
+                  create: (ctx) => NotificationProvider(),
                 ),
                 ChangeNotifierProvider(
                   create: (ctx) => PrefProvider(),
@@ -549,6 +558,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                         '/': (_) => SplashScreen(),
                         LoginScreen.routeName: (_) => LoginScreen(),
                         DashboardScreen.routeName: (_) => DashboardScreen(),
+                        InternetNotAvailable.routeName: (_) =>
+                            InternetNotAvailable(),
                         EditProfileScreen.routeName: (_) => EditProfileScreen(),
                       },
                       builder: EasyLoading.init(),

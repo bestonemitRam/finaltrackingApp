@@ -24,7 +24,8 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 class MoreScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return 
+    Container(
       decoration: RadialDecoration(),
       child: Scaffold(
         resizeToAvoidBottomInset: true,
@@ -93,5 +94,6 @@ class MoreScreen extends StatelessWidget {
         )),
       ),
     );
+  
   }
 }

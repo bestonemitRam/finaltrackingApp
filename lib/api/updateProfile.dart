@@ -18,8 +18,6 @@ class UpdateProfiles {
     String token = await preferences.getToken();
     int getUserID = await preferences.getUserId();
 
-
-
     dynamic response;
     try {
       if (avatar.path != '') 
@@ -30,12 +28,9 @@ class UpdateProfiles {
           'user_token': '$token',
           'user_id': '$getUserID',
         };
-
         request.headers.addAll(headers);
-
         final file = await http.MultipartFile.fromPath('avatar', avatar.path);
       
-
         request.files.add(file);
         request.fields['full_name'] = name;
         request.fields['mail'] = email;
@@ -47,11 +42,8 @@ class UpdateProfiles {
         try {
           final streamedResponse = await request.send();
           final response = await http.Response.fromStream(streamedResponse);
-         
-
+      
           var out = jsonDecode(response.body);
-         
-
           if (response.statusCode == 201) {
             Fluttertoast.showToast(
                 msg: "Profile Updated Successfully !",

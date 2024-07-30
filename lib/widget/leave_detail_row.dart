@@ -133,4 +133,5 @@ class LeaveDetailRow extends StatelessWidget {
         return Colors.orange;
     }
   }
+
 }

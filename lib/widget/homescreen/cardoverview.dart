@@ -15,7 +15,7 @@ class CardOverView extends StatelessWidget {
       child: Card(
         shape: ButtonBorder(),
         elevation: 0,
-        color: Colors.white12,
+        color: Colors.white10,
         child: Container(
           padding: EdgeInsets.all(10),
           child: Column(

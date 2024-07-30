@@ -3,7 +3,7 @@ class HomeScreenModel
 {
   bool? status;
   String? message;
- HomeData? data;
+  HomeData? data;
 
   HomeScreenModel({this.status, this.message, this.data});
 

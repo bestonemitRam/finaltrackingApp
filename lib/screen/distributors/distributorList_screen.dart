@@ -69,65 +69,13 @@ class DistributorScreenListData extends StatelessWidget {
                                 Center(child: new CircularProgressIndicator()),
                             errorWidget: (context, url, error) =>
                                 Icon(Icons.error),
-                          )
-                          //  Image.network(
-                          //   APIURL.imageURL + distributorAvatar,
-                          //   fit: BoxFit.cover,
-                          //   errorBuilder: (context, error, stackTrace) {
-                          //     return Image.asset(
-                          //       'assets/images/dummy_avatar.png',
-                          //       // width: 50,
-                          //       //  height: 50,
-                          //       fit: BoxFit.cover,
-                          //     );
-                          //   },
-                          // ),
-                          ),
+                          )),
                     ),
                   ),
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Row(
-                    //   children: [
-                    //     Text(
-                    //       "Status : ",
-                    //       maxLines: 1,
-                    //       style: TextStyle(color: Colors.white, fontSize: 15),
-                    //     ),
-                    //     Container(
-                    //       width: MediaQuery.of(context).size.width / 2,
-                    //       child: Text(
-                    //         "${is_varified == 0 ? "Not Verify" : "Verify"} ",
-                    //         overflow: TextOverflow.ellipsis,
-                    //         maxLines: 10,
-                    //         style: TextStyle(
-                    //             color: is_varified == 0 ? Colors.red : Colors.green,
-                    //             fontSize: 14),
-                    //       ),
-                    //     ),
-                    //   ],
-                    // ),
-                    Row(
-                      children: [
-                        Text(
-                          "Org. Name : ",
-                          maxLines: 1,
-                          style: TextStyle(color: Colors.white, fontSize: 15),
-                        ),
-                        Container(
-                          width: MediaQuery.of(context).size.width / 2.5,
-                          child: Text(
-                            "$distributorOrgName",
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 10,
-                            style: TextStyle(
-                                color: HexColor("#036eb7"), fontSize: 14),
-                          ),
-                        ),
-                      ],
-                    ),
                     Row(
                       children: [
                         Text(
@@ -148,6 +96,27 @@ class DistributorScreenListData extends StatelessWidget {
                       ],
                     ),
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Org. Name : ",
+                          maxLines: 1,
+                          style: TextStyle(color: Colors.white, fontSize: 15),
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width / 2.3,
+                          child: Text(
+                            "$distributorOrgName",
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 10,
+                            style: TextStyle(
+                                color: HexColor("#036eb7"), fontSize: 14),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    Row(
                       children: [
                         Text(
                           "Phone No. : ",
@@ -167,6 +136,7 @@ class DistributorScreenListData extends StatelessWidget {
                       ],
                     ),
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           "Email : ",
@@ -239,7 +209,7 @@ class DistributorScreenListData extends StatelessWidget {
                     ))
               ],
             ),
-            if (is_varified == 1)
+            if (is_varified == 1 && address != '')
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

@@ -7,7 +7,8 @@ import 'package:bmitserp/widget/attendancescreen/attendancetoggle.dart';
 import 'package:bmitserp/widget/attendancescreen/reportlistview.dart';
 import 'package:provider/provider.dart';
 
-class AttendanceScreen extends StatefulWidget {
+class AttendanceScreen extends StatefulWidget 
+{
   @override
   State<StatefulWidget> createState() => AttendanceScreenState();
 }
@@ -16,7 +17,8 @@ class AttendanceScreenState extends State<AttendanceScreen> {
   var initial = true;
 
   @override
-  void didChangeDependencies() {
+  void didChangeDependencies() 
+  {
     if (initial) {
       loadAttendanceReport();
       initial = false;

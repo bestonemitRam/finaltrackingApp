@@ -1,24 +1,28 @@
 import 'dart:io';
 
 import 'package:bmitserp/api/apiConstant.dart';
+import 'package:bmitserp/api/app_strings.dart';
+import 'package:bmitserp/provider/notificationprovider.dart';
 
 import 'package:bmitserp/screen/dashboard/homescreen.dart';
 import 'package:bmitserp/screen/dashboard/leaveandattendance_dash.dart';
 import 'package:bmitserp/screen/dashboard/morescreen.dart';
 import 'package:bmitserp/screen/dashboard/projectscreen.dart';
+import 'package:bmitserp/screen/profile/NotificationScreen.dart';
 import 'package:bmitserp/service/push_notifications.dart';
 import 'package:bmitserp/utils/showExitPopup.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 
 import 'package:hexcolor/hexcolor.dart';
 
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -33,15 +37,22 @@ class DashboardScreen extends StatefulWidget {
 class DashboardScreenState extends State<DashboardScreen> {
   NotificationServices notificationServices = NotificationServices();
   Position? _currentPosition;
-  List<Widget> _buildScreens() {
-    return [
-      HomeScreen(),
-      ProjectScreen(),
-      AttendanceScreenHistory(),
-      MoreScreen(),
-    ];
-  }
+  // List<Widget> _pages()
+  // {
+  //   return [
+  //     HomeScreen(),
+  //     ProjectScreen(),
+  //     AttendanceScreenHistory(),
+  //     MoreScreen(),
+  //   ];
+  // }
 
+  final List<Widget> _pages = [
+    HomeScreen(),
+    ProjectScreen(),
+    AttendanceScreenHistory(),
+    MoreScreen(),
+  ];
   @override
   void initState() {
     super.initState();
@@ -50,9 +61,13 @@ class DashboardScreenState extends State<DashboardScreen> {
     notificationServices.firebaseInit(context);
     notificationServices.setupInteractMessage(context);
 
+
     _handleLocationPermission();
     setupRemoteConfig();
   }
+
+  int _page = 0;
+  GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
 
   Future<bool> _handleLocationPermission() async {
     LocationPermission permission = await Geolocator.checkPermission();
@@ -126,87 +141,252 @@ class DashboardScreenState extends State<DashboardScreen> {
               ));
     }
 
-    // serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    // if (!serviceEnabled) {
-    //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-    //       content: Text(
-    //           'Location services are disabled. Please enable the services')));
-    //   return false;
-    // }
-    // permission = await Geolocator.checkPermission();
-    // if (permission == LocationPermission.denied) {
-    //   permission = await Geolocator.requestPermission();
-    //   if (permission == LocationPermission.denied) {
-    //     ScaffoldMessenger.of(context).showSnackBar(
-    //         const SnackBar(content: Text('Location permissions are denied')));
-    //     return false;
-    //   }
-    // }
-    // if (permission == LocationPermission.deniedForever) {
-    //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-    //       content: Text(
-    //           'Location permissions are permanently denied, we cannot request permissions.')));
-    //   return false;
-    // }
-    // return true;
     return true;
   }
 
-  PersistentTabController _controller =
-      PersistentTabController(initialIndex: 0);
-
   @override
   Widget build(BuildContext context) {
-    // ignore: deprecated_member_use
+  
+
     return WillPopScope(
-      onWillPop: () => showExitPopup(context),
-      child: PersistentTabView(context,
-          controller: _controller,
-          screens: _buildScreens(),
-          items: _navBarsItems(),
-          backgroundColor: HexColor("#041033"),
-          handleAndroidBackButtonPress: true,
-          resizeToAvoidBottomInset: true,
-          stateManagement: true,
-          hideNavigationBarWhenKeyboardShows: true,
-          decoration: NavBarDecoration(
-            borderRadius: BorderRadius.circular(0.0),
-            colorBehindNavBar: Colors.white,
+        onWillPop: () => showExitPopup(context),
+        child: Scaffold(
+          // appBar: AppBar(
+          //   backgroundColor:
+          //       Colors.transparent, // Make the AppBar background transparent
+          //   flexibleSpace: Container(
+          //     decoration: BoxDecoration(
+          //       gradient: RadialGradient(
+          //         colors: [
+          //           HexColor("#011754"),
+          //           HexColor("#041033"),
+          //         ],
+          //         center: Alignment.center,
+          //         radius: 0.8,
+          //       ),
+          //     ),
+          //   ),
+          //   title: Container(
+          //     padding: EdgeInsets.only(top: 10),
+          //     child: Column(
+          //       mainAxisAlignment: MainAxisAlignment.center,
+          //       crossAxisAlignment: CrossAxisAlignment.start,
+          //       children: [
+          //         Text(
+          //           "${Apphelper().greeting(context)}",
+          //           style: TextStyle(color: Colors.white, fontSize: 12),
+          //         ),
+          //         if (Apphelper.USER_NAME != '')
+          //           Text(
+          //             Apphelper.USER_NAME ?? " ",
+          //             style: TextStyle(color: Colors.white, fontSize: 12),
+          //           ),
+          //         Text(
+          //           //sharedPref.getString(Apphelper.USER_EMP_CODE) ?? "",
+          //           '',
+          //           style: TextStyle(color: Colors.white, fontSize: 12),
+          //         ),
+          //       ],
+          //     ),
+          //   ),
+          //   leading: Padding(
+          //     padding: EdgeInsets.only(left: 5, right: 5, top: 2, bottom: 8),
+          //     child: Row(
+          //       mainAxisSize: MainAxisSize.max,
+          //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //       children: [
+          //         ClipRRect(
+          //           borderRadius: BorderRadius.circular(25),
+          //           child: Image.network(
+          //             // APIURL.imageURL + Apphelper.USER_AVATAR.toString(),
+          //             '',
+          //             //   width: 50,
+          //             //  height: 50,
+          //             fit: BoxFit.cover,
+          //             errorBuilder: (context, error, stackTrace) {
+          //               return Image.asset(
+          //                 'assets/images/dummy_avatar.png',
+          //                 //    width: 50,
+          //                 //   height: 50,
+          //                 fit: BoxFit.cover,
+          //               );
+          //             },
+          //           ),
+          //         ),
+          //       ],
+          //     ),
+          //   ),
+          //   actions: [
+          //     Padding(
+          //       padding: const EdgeInsets.all(8.0),
+          //       child: Center(
+          //         child: Stack(
+          //           alignment: Alignment.center,
+          //           children: [
+          //             IconButton(
+          //               icon: Icon(
+          //                 Icons.notifications,
+          //                 color: Colors.white,
+          //               ),
+          //               onPressed: () {
+          //                 Get.to(() => NotificationScreen(),
+          //                     transition: Transition.fade);
+          //               },
+          //             ),
+          //             // if (notificationProvider.unreadCount >= 0)
+          //             //   Positioned(
+          //             //     right: 10,
+          //             //     child: Container(
+          //             //       padding: EdgeInsets.all(1),
+          //             //       decoration: BoxDecoration(
+          //             //         color: Colors.red,
+          //             //         borderRadius: BorderRadius.circular(6),
+          //             //       ),
+          //             //       constraints: BoxConstraints(
+          //             //         minWidth: 12,
+          //             //         minHeight: 12,
+          //             //       ),
+          //             //       child: Text(
+          //             //         '${notificationProvider.unreadCount}',
+          //             //         style: TextStyle(
+          //             //           color: Colors.white,
+          //             //           fontSize: 8,
+          //             //         ),
+          //             //         textAlign: TextAlign.center,
+          //             //       ),
+          //             //     ),
+          //             //   )
+          //           ],
+          //         ),
+          //       ),
+          //     ),
+          //   ],
+          // ),
+        
+        
+          bottomNavigationBar: CurvedNavigationBar(
+            key: _bottomNavigationKey,
+            index: 0,
+            items: <Widget>[
+              Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.home_filled, size: 20),
+                    Text(
+                      "Home",
+                      style:
+                          TextStyle(fontSize: 12, fontWeight: FontWeight.w900),
+                    )
+                  ],
+                ),
+              ),
+              Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.sick, size: 20),
+                    Text(
+                      "Work",
+                      style:
+                          TextStyle(fontSize: 12, fontWeight: FontWeight.w900),
+                    )
+                  ],
+                ),
+              ),
+              Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.calendar_month_outlined, size: 20),
+                    Text(
+                      "History",
+                      style:
+                          TextStyle(fontSize: 12, fontWeight: FontWeight.w900),
+                    )
+                  ],
+                ),
+              ),
+              Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.more, size: 20),
+                    Text(
+                      "Menu",
+                      style:
+                          TextStyle(fontSize: 12, fontWeight: FontWeight.w900),
+                    )
+                  ],
+                ),
+              ),
+            ],
+            color: Colors.white,
+            buttonBackgroundColor: Colors.white,
+            backgroundColor: Colors.white,
+            animationCurve: Curves.easeInOut,
+            animationDuration: Duration(milliseconds: 600),
+            onTap: (index) {
+              setState(() {
+                _page = index;
+              });
+            },
+            letIndexChange: (index) => true,
           ),
-          popAllScreensOnTapOfSelectedTab: true,
-          popActionScreens: PopActionScreensType.all,
-          navBarStyle: NavBarStyle.style11),
-    );
+          body: _pages[_page],
+        )
+        // PersistentTabView(
+        //   context,
+        //     controller: _controller,
+        //     screens: _buildScreens(),
+        //     items: _navBarsItems(),
+        //     handleAndroidBackButtonPress: true,
+        //     resizeToAvoidBottomInset: true,
+        //     stateManagement: true,
+        //     hideNavigationBarWhenKeyboardShows: true,
+        //     decoration: NavBarDecoration(
+        //       borderRadius: BorderRadius.circular(0.0),
+        //       colorBehindNavBar: Colors.white,
+        //     ),
+        //     popAllScreensOnTapOfSelectedTab: true,
+        //     popActionScreens: PopActionScreensType.all,
+        //     navBarStyle: NavBarStyle.style11),
+
+        );
   }
 
-  List<PersistentBottomNavBarItem> _navBarsItems() {
-    return [
-      PersistentBottomNavBarItem(
-        icon: Icon(Icons.home_filled),
-        title: "Home",
-        activeColorPrimary: Colors.white,
-        inactiveColorPrimary: Colors.white30,
-      ),
-      PersistentBottomNavBarItem(
-        icon: Icon(Icons.work_history),
-        title: "Work",
-        activeColorPrimary: Colors.white,
-        inactiveColorPrimary: Colors.white30,
-      ),
-      PersistentBottomNavBarItem(
-        icon: Icon(Icons.sick),
-        title: "Leave",
-        activeColorPrimary: Colors.white,
-        inactiveColorPrimary: Colors.white30,
-      ),
-      PersistentBottomNavBarItem(
-        icon: Icon(Icons.more),
-        title: "Menu",
-        activeColorPrimary: Colors.white,
-        inactiveColorPrimary: Colors.white30,
-      ),
-    ];
-  }
+  // List<PersistentBottomNavBarItem> _navBarsItems() {
+  //   return [
+  //     PersistentBottomNavBarItem(
+  //       icon: Icon(Icons.home_filled),
+  //       title: "Home",
+  //       activeColorPrimary: Colors.white,
+  //       inactiveColorPrimary: Colors.white30,
+  //     ),
+  //     PersistentBottomNavBarItem(
+  //       icon: Icon(Icons.work_history),
+  //       title: "Work",
+  //       activeColorPrimary: Colors.white,
+  //       inactiveColorPrimary: Colors.white30,
+  //     ),
+  //     PersistentBottomNavBarItem(
+  //       icon: Icon(Icons.sick),
+  //       title: "Leave",
+  //       activeColorPrimary: Colors.white,
+  //       inactiveColorPrimary: Colors.white30,
+  //     ),
+  //     PersistentBottomNavBarItem(
+  //       icon: Icon(Icons.more),
+  //       title: "Menu",
+  //       activeColorPrimary: Colors.white,
+  //       inactiveColorPrimary: Colors.white30,
+  //     ),
+  //   ];
+  // }
 
   setupRemoteConfig() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
@@ -382,5 +562,3 @@ class DashboardScreenState extends State<DashboardScreen> {
 //     ),
 //   );
 // }
-
-

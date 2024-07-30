@@ -1,4 +1,3 @@
-
 import 'package:bmitserp/map/map_route.dart';
 import 'package:bmitserp/provider/leaveprovider.dart';
 import 'package:bmitserp/screen/shop_module/create_shop_screen.dart';
@@ -9,8 +8,6 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
-
-
 
 class ShopListingScreen extends StatefulWidget {
   const ShopListingScreen({Key? key}) : super(key: key);
@@ -24,8 +21,7 @@ class _ShopListingScreenState extends State<ShopListingScreen> {
   late BitmapDescriptor customIcon;
 
   @override
-  void didChangeDependencies()
-   {
+  void didChangeDependencies() {
     if (init) {
       initialState();
       init = false;
@@ -49,10 +45,7 @@ class _ShopListingScreenState extends State<ShopListingScreen> {
       return "Loaded";
     }
 
-    if (leaveData == 200) 
-    {
-
-    }
+    if (leaveData == 200) {}
 
     return "Loaded";
   }
@@ -62,8 +55,7 @@ class _ShopListingScreenState extends State<ShopListingScreen> {
     return Container(
       decoration: RadialDecoration(),
       child: Scaffold(
-        appBar: 
-        AppBar(
+        appBar: AppBar(
           backgroundColor: Colors.transparent,
           leading: InkWell(
             child: Icon(
@@ -129,7 +121,6 @@ class _ShopListingScreenState extends State<ShopListingScreen> {
             )
           ],
         ),
-        
         backgroundColor: Colors.transparent,
         body: RefreshIndicator(
           triggerMode: RefreshIndicatorTriggerMode.onEdge,
@@ -145,7 +136,8 @@ class _ShopListingScreenState extends State<ShopListingScreen> {
                   AlwaysScrollableScrollPhysics(), // Ensure it's always scrollable
               child: Column(
                 children: [
-                  ShopList(),
+              
+               ShopList(),
                 ],
               ),
             ),

@@ -2,9 +2,9 @@ import 'dart:ui';
 import 'package:bmitserp/model/auth.dart';
 import 'package:bmitserp/screen/dashboard/dashboard_screen.dart';
 import 'package:bmitserp/widget/buttonborder.dart';
+import 'package:bmitserp/widget/radialDecoration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-
 import 'package:flutter_web_browser/flutter_web_browser.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
@@ -63,6 +63,7 @@ class loginScreenState extends State<LoginScreen> {
       final response = await Provider.of<Auth>(context, listen: false)
           .login(_usernameController.text, _passwordController.text);
 
+    
       if (!mounted) return;
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(response.message)));
@@ -88,7 +89,8 @@ class loginScreenState extends State<LoginScreen> {
         child: Form(
           key: _form,
           child: Container(
-            decoration: backgroundDecoration(),
+            //decoration: backgroundDecoration(),
+            decoration: RadialDecoration(),
             child: IgnorePointer(
               ignoring: _isLoading,
               child: BackdropFilter(
